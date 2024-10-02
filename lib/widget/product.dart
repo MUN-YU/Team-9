@@ -33,6 +33,7 @@ class _ProductState extends State<Product> {
               ),
               width: MediaQuery.of(context).size.width*0.95,
               height: 100.0,
+              child: Row(),
             ),
           ),
         );

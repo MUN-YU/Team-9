@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -96,12 +98,12 @@ class _LoginPageState extends State<LoginPage> {
                               Radius.circular(5),
                             ),
                           ),
-                          backgroundColor: Color.fromARGB(255, 222, 211, 27)),
+                          backgroundColor: const Color.fromARGB(255, 222, 211, 27)),
                       onPressed: _login,
                       child: const Text(
                         "로그인",
                         style: TextStyle(
-                            color: const Color.fromARGB(255, 20, 37, 26)),
+                            color: Color.fromARGB(255, 20, 37, 26)),
                       ),
                     ),
                   ),
