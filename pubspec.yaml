@@ -65,6 +65,7 @@ flutter:
       - assets/images/logo/logo_green_moon.png
       - assets/images/logo/logo_green.png
       - assets/images/logo/logo_white_moon.png
+      - assets/images/profile_image.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
