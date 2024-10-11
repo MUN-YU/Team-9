@@ -10,17 +10,21 @@ class SalesListScreen extends StatefulWidget {
 
 class _SalesListScreenState extends State<SalesListScreen> {
   late List<int> _products_list=[1,2,3,4,5,6,7,8,9,10];
+  late Map<int,bool> isvisible={};
 
   @override
   void initState(){
     super.initState();
+    for (int id in _products_list) {
+    isvisible[id] = true;
+  }
   }
 
   void _updatepage(int product_id) {
     setState(() {
-      print("Deleting product with ID: $product_id");
-      _products_list.removeWhere((item) => item == product_id);
-      print("Updated list: $_products_list");
+      //print("Deleting product with ID: $product_id");
+      isvisible[product_id]=false;
+      //print("Updated list: $_products_list");
     });
   }
 
@@ -47,7 +51,7 @@ class _SalesListScreenState extends State<SalesListScreen> {
       body: SingleChildScrollView(
         child: Column(//children: createWidgetList(),)
           children: _products_list.map((product_id) {
-            print(product_id);
+            if(isvisible[product_id]==true){
             return Padding(
               padding: const EdgeInsets.all(5),
               child: Product(
@@ -60,7 +64,8 @@ class _SalesListScreenState extends State<SalesListScreen> {
                 price: '${15000}원',
                 delete: _updatepage,
               ),
-            );
+            );}
+            else{return const SizedBox();}
           }).toList(),
         )
       )

@@ -159,7 +159,7 @@ class _ProductState extends State<Product> {
                           Expanded(
                             flex:1,
                             child: Text(
-                              _product_id.toString(),
+                              _price,
                               textAlign: TextAlign.right,
                               style: const TextStyle(
                                 fontSize: 16.0,  // 텍스트 크기
