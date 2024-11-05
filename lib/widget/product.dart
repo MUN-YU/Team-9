@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:grand_market/2_mypage/Review_page.dart';
 
 class Product extends StatefulWidget {
   final Function(int) delete;
 
+  final String token;
   final int type;
   final int product_id;
   final String image_link;
@@ -13,6 +15,7 @@ class Product extends StatefulWidget {
   // 생성자에서 text를 받음
   const Product({
     Key? key,
+    required this.token,
     required this.type,
     required this.product_id,
     required this.image_link,
@@ -47,6 +50,11 @@ class Rem_ModButton extends StatefulWidget {
 }
 
 class ReviewButton extends StatefulWidget {
+  final String token;
+  final int itemIdx;
+
+  const ReviewButton({Key? key, required this.token, required this.itemIdx}) : super(key: key);
+
   _ReviewButtonState createState() => _ReviewButtonState();
 }
 
@@ -90,7 +98,7 @@ class _ProductState extends State<Product> {
         dynamicwidget=Rem_ModButton(onpressed: _delete);
         break;
       case 3:
-        dynamicwidget=ReviewButton();
+        dynamicwidget=ReviewButton(token: widget.token, itemIdx: widget.product_id,);
         break;
       default:
         dynamicwidget=Text('error');
@@ -100,12 +108,13 @@ class _ProductState extends State<Product> {
     return 
         GestureDetector(
           onTap: () {
-            print("click!!");
+            print("click!!");  //->제품 상세 목록으로 이동
           },
           child: Center(
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Color.fromARGB(255, 255, 255, 255),
+                borderRadius: BorderRadius.circular(5.0), 
               ),
               width: MediaQuery.of(context).size.width*0.95,
               height: 130.0,
@@ -267,19 +276,21 @@ class _ReviewButtonState extends State<ReviewButton>{
   return Container(
     padding: EdgeInsets.all(5),
     child: TextButton(
-      onPressed: (){print("review");},
+      onPressed: (){Navigator.push(
+        context, MaterialPageRoute(builder: (context) => ReviewPage(token: widget.token, itemIdx: widget.itemIdx,)));
+        },
       style: TextButton.styleFrom(
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.zero), // 모서리를 각지게 설정
         ),
-        backgroundColor: const Color.fromARGB(255, 185, 253, 174),
+        backgroundColor: Colors.grey,
       ),
       child: const Text(
         "리뷰\n남기기",
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 10.0,
-          color: Color.fromARGB(255, 6, 132, 33),  // 텍스트 크기
+          color: Colors.black,  // 텍스트 크기
         ),
       )
     )

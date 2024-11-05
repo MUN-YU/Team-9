@@ -1,22 +1,57 @@
 import 'package:flutter/material.dart';
 import '../widget/product.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class InterestListScreen extends StatefulWidget {
-  const InterestListScreen({super.key});
+  final String token;
+
+  const InterestListScreen({super.key, required this.token});
 
   @override
   _InterestListScreenState createState() => _InterestListScreenState();
 }
 
 class _InterestListScreenState extends State<InterestListScreen> {
-  late List<int> _products_list=[1,2,3,4,5,6,7,8,9,10];
+  List<dynamic> _products = [];
 
   @override
   void initState(){
     super.initState();
+    fetchProducts(widget.token);
   }
 
-  //future() //백엔드에서 정보 불러오기
+  Future<void> fetchProducts(String token) async {
+    final url = Uri.parse('https://swe9.comit-server.com/mypage/likes');
+    print('$token');
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print('Data received: $data');
+
+        if (data['status'] == 200) {
+          setState(() {
+            _products = data['content']; // 가져온 제품 데이터를 저장
+          });
+        } else {
+          // 오류 처리
+          print('Error: ${data['message']}');
+        }
+      } else {
+        print('Failed to load data: ${response.statusCode} ${response.body}');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,20 +73,21 @@ class _InterestListScreenState extends State<InterestListScreen> {
       ),
       body: SingleChildScrollView(
         child: Column(//children: createWidgetList(),)
-          children: List.generate(_products_list.length,(index){
+          children: _products.map((product) {
             return Padding(
                 padding: const EdgeInsets.all(5),
                 child: Product(
-                type: 1,
-                product_id: _products_list[index],
-                image_link: 'http://github.com/MUN-YU/Team-9/blob/gwangbin/assets/images/test.png?raw=true', 
-                title: '일반 화학 8판', 
-                text: '@@강의 @@교수님',
-                price: 15000.toString()+'원',
-                delete: (dynamic value) {},
+                  token: widget.token,
+                  type: 1,
+                  product_id: product['itemIdx'],
+                  image_link: product['itemImage'], 
+                  title: product['title'], 
+                  text: product['description'],
+                  price: '${product['price']}원',
+                  delete: (dynamic value) {},
                 )
               );
-          })
+          }).toList(),
         )
       )
     );

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:grand_market/2_mypage/Sales_list_screen.dart';
 import 'package:grand_market/2_mypage/Transaction_list_screen.dart';
 import 'package:grand_market/2_mypage/interest_list_screen.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Mypage_test extends StatefulWidget {
   const Mypage_test({super.key});
@@ -11,6 +13,63 @@ class Mypage_test extends StatefulWidget {
 }
 
 class _Mypage_testState extends State<Mypage_test> {
+  late String _token;
+  //임시 회원가입
+  Future<void> Regist() async {
+    final url = Uri.parse('https://swe9.comit-server.com/api/register');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "name": "testname",
+          "id": "testid",
+          "password": "12345678",
+          "major": "소프트웨어학과",
+          "email": "test@g.skku.edu",
+          "isValid": true,
+        }),
+      );
+
+    if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print('Data received: $data');
+    } else {
+        print('Failed to load data: ${response.statusCode} ${response.body}');
+    }
+    } catch (e) {
+      print('Error occurred: $e');
+    }
+  }
+  //임시로 토큰 받는 함수
+  Future<void> getToken() async {
+    final url = Uri.parse('https://swe9.comit-server.com/api/auth/login');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "id": "testid",
+          "password": "12345678",
+        }),
+      );
+
+    if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print('Data received: $data');
+
+        _token = data['content']['token'];
+        print('Token: $_token');
+    } else {
+        print('Failed to load data: ${response.statusCode} ${response.body}');
+    }
+    } catch (e) {
+      print('Error occurred: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +99,7 @@ class _Mypage_testState extends State<Mypage_test> {
                     ),
                     backgroundColor: const Color.fromARGB(255, 222, 211, 27)),
                 onPressed: (){Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => InterestListScreen()));
+                  context, MaterialPageRoute(builder: (context) => InterestListScreen(token: _token)));
                   },
                 child: const Text(
                   "관심목록",
@@ -61,7 +120,7 @@ class _Mypage_testState extends State<Mypage_test> {
                     ),
                     backgroundColor: const Color.fromARGB(255, 222, 211, 27)),
                 onPressed: (){Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => SalesListScreen()));
+                  context, MaterialPageRoute(builder: (context) => SalesListScreen(token: _token)));
                   },
                 child: const Text(
                   "판매목록",
@@ -82,7 +141,7 @@ class _Mypage_testState extends State<Mypage_test> {
                     ),
                     backgroundColor: const Color.fromARGB(255, 222, 211, 27)),
                 onPressed: (){Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => TransactionListScreen()));
+                  context, MaterialPageRoute(builder: (context) => TransactionListScreen(token: _token)));
                   },
                 child: const Text(
                   "거래목록",
@@ -92,6 +151,27 @@ class _Mypage_testState extends State<Mypage_test> {
               ),
             ),
             const Spacer(flex:1),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(5),
+                      ),
+                    ),
+                    backgroundColor: const Color.fromARGB(255, 222, 211, 27)),
+                onPressed: (){
+                  Regist();
+                  getToken();
+                  },
+                child: const Text(
+                  "임시 토큰",
+                  style: TextStyle(
+                      color: Color.fromARGB(255, 20, 37, 26)),
+                ),
+              ),
+            ),
           ],
         ),
       ),
