@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../5_main/main_screen.dart';
+import '../10_user_update_screen/user_update_screen.dart';
 
 // Define a mock for ChatPage and ListPage for navigation example
 class ChatPage extends StatelessWidget {
@@ -211,7 +212,11 @@ class MyProfile extends StatelessWidget {
                   top: 10,
                   child: ElevatedButton(
                     onPressed: () {
-                      // 프로필 편집 페이지로 이동
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => UserUpdateScreen()),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Color.fromARGB(255, 20, 37, 26),
