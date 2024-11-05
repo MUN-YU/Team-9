@@ -15,6 +15,7 @@ class _DetailScreenState extends State<DetailScreen> {
   Map<String, dynamic>? itemDetails;
   bool isLoading = true;
   bool isFavorite = false;
+  int currentPhotoIndex = 0;
 
   @override
   void initState() {
@@ -79,6 +80,22 @@ class _DetailScreenState extends State<DetailScreen> {
     }
   }
 
+  void _showPreviousImage() {
+    setState(() {
+      if (currentPhotoIndex > 0) {
+        currentPhotoIndex--;
+      }
+    });
+  }
+
+  void _showNextImage() {
+    setState(() {
+      if (currentPhotoIndex < (itemDetails?['photos']?.length ?? 1) - 1) {
+        currentPhotoIndex++;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -116,41 +133,64 @@ class _DetailScreenState extends State<DetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Display main image with fixed size and photo count overlay
-            itemDetails?['photos'] != null && itemDetails!['photos'].isNotEmpty
-                ? Stack(
-                    children: [
-                      Image.network(
-                        itemDetails!['photos'][0],
-                        width: double.infinity,
-                        height: 200,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Icon(
-                          Icons.image_not_supported,
-                          size: 100,
-                        ),
+            // Display main image with arrow navigation and index display
+            if (itemDetails?['photos'] != null &&
+                itemDetails!['photos'].isNotEmpty)
+              Stack(
+                children: [
+                  Center(
+                    child: Image.network(
+                      itemDetails!['photos'][currentPhotoIndex],
+                      width: double.infinity,
+                      height: 200,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Icon(
+                        Icons.image_not_supported,
+                        size: 100,
                       ),
-                      Positioned(
-                        bottom: 8,
-                        right: 8,
-                        child: Container(
-                          color: Colors.black54,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          child: Text(
-                            '1/${itemDetails!['photos'].length}',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
-                : Image.asset(
-                    'assets/images/item.png',
-                    width: double.infinity,
-                    height: 200,
-                    fit: BoxFit.cover,
+                    ),
                   ),
+                  if (currentPhotoIndex > 0)
+                    Positioned(
+                      left: 8,
+                      top: 75,
+                      child: IconButton(
+                        icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                        onPressed: _showPreviousImage,
+                      ),
+                    ),
+                  if (currentPhotoIndex < itemDetails!['photos'].length - 1)
+                    Positioned(
+                      right: 8,
+                      top: 75,
+                      child: IconButton(
+                        icon:
+                            Icon(Icons.arrow_forward_ios, color: Colors.white),
+                        onPressed: _showNextImage,
+                      ),
+                    ),
+                  Positioned(
+                    bottom: 8,
+                    right: 8,
+                    child: Container(
+                      color: Colors.black54,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      child: Text(
+                        '${currentPhotoIndex + 1}/${itemDetails!['photos'].length}',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            else
+              Image.asset(
+                'assets/images/item.png',
+                width: double.infinity,
+                height: 200,
+                fit: BoxFit.cover,
+              ),
             const SizedBox(height: 16),
             // Title and like button in a row
             Row(

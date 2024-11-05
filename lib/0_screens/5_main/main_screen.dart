@@ -261,7 +261,7 @@ class _MainScreenState extends State<MainScreen> {
                   style: TextStyle(color: Colors.white, fontSize: 14),
                 ),
                 onPressed: () {
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => AddProductScreen()),
                   );
