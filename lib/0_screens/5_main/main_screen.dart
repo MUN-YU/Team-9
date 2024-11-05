@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../7_search_screen/search_screen';
-import '../6_detail_screen/detail_screen';
-import '../10_user_update_screen/user_update_screen';
+import '../7_search_screen/search_screen.dart';
+import '../6_detail_screen/detail_screen.dart';
+import '../10_user_update_screen/user_update_screen.dart';
 
 // Define category mapping for dropdown selection
 const Map<String, String> categoryMapping = {
