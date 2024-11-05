@@ -149,7 +149,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => MainScreen()),
+            );
           }, // 뒤로가기 버튼
         ),
       ),
