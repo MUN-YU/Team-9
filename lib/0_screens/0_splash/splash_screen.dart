@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:grand_market/0_screens/1_login/login_screen.dart';
+import 'package:grand_market/0_screens/_mypage/my_page_screen.dart';
+import 'package:grand_market/0_screens/_addProduct/add_product_screen.dart';
+import 'package:grand_market/0_screens/_signup/sign_up_screen.dart';
 
 class Splash extends StatefulWidget {
+  const Splash({super.key});
+
   @override
   State<Splash> createState() => _SplashState();
 }

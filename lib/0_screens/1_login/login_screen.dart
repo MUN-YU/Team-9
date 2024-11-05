@@ -53,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
             TextField(
               controller: _idController,
               decoration: const InputDecoration(
-                labelText: "계정",
+                labelText: "아이디",
                 border: OutlineInputBorder(),
                 fillColor: Colors.white,
                 filled: true,
