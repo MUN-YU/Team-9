@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../7_search_screen/search_screen';
 import '../6_detail_screen/detail_screen';
+import '../10_user_update_screen/user_update_screen';
 
 // Define category mapping for dropdown selection
 const Map<String, String> categoryMapping = {
@@ -259,7 +260,12 @@ class _MainScreenState extends State<MainScreen> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.menu),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => UserUpdateScreen()),
+            );
+          },
         ),
         title: Text(
           '성대한 마켓',
