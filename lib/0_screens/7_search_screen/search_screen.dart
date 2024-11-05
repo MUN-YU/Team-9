@@ -24,8 +24,9 @@ class _SearchScreenState extends State<SearchScreen> {
   Future<void> _loadRecentSearches() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      recentSearches = prefs.getStringList('recentSearches')?.reversed.toList() ??
-          ["일반 화학 8판", "실험복", "공학용 계산기"].reversed.toList();
+      recentSearches =
+          prefs.getStringList('recentSearches')?.reversed.toList() ??
+              ["일반 화학 8판", "실험복", "공학용 계산기"].reversed.toList();
     });
   }
 
@@ -33,7 +34,7 @@ class _SearchScreenState extends State<SearchScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setStringList('recentSearches', recentSearches.reversed.toList());
   }
-  
+
   void _onSearch() {
     String query = _controller.text.trim();
     if (query.isNotEmpty) {
@@ -44,8 +45,10 @@ class _SearchScreenState extends State<SearchScreen> {
         }
         // Filter items based on the title containing the query
         _searchResults = widget.items
-            .where((item) =>
-                item['title'].toString().toLowerCase().contains(query.toLowerCase()))
+            .where((item) => item['title']
+                .toString()
+                .toLowerCase()
+                .contains(query.toLowerCase()))
             .toList();
       });
       // Return both the search results and the search query
@@ -111,10 +114,12 @@ class _SearchScreenState extends State<SearchScreen> {
                     title: Text(recentSearches[index]),
                     trailing: IconButton(
                       icon: Icon(Icons.close),
-                      onPressed: () => _removeRecentSearch(index), // Remove individual search
+                      onPressed: () => _removeRecentSearch(
+                          index), // Remove individual search
                     ),
                     onTap: () {
-                      _controller.text = recentSearches[index]; // Fill search field
+                      _controller.text =
+                          recentSearches[index]; // Fill search field
                       _onSearch(); // Trigger search on selection
                     },
                   );
