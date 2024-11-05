@@ -97,7 +97,8 @@ class _DetailScreenState extends State<DetailScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF46823E),
-        title: Text(itemDetails?['title'] ?? 'No Title'),
+        title: Text(itemDetails?['sellerName'] ?? '판매자 이름',
+                    style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -110,16 +111,33 @@ class _DetailScreenState extends State<DetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Display main image with fixed size and photo count overlay
             itemDetails?['photos'] != null && itemDetails!['photos'].isNotEmpty
-                ? Image.network(
-                    itemDetails!['photos'][0],
-                    width: double.infinity,
-                    height: 200,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Icon(
-                      Icons.image_not_supported,
-                      size: 100,
-                    ),
+                ? Stack(
+                    children: [
+                      Image.network(
+                        itemDetails!['photos'][0],
+                        width: double.infinity,
+                        height: 200,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Icon(
+                          Icons.image_not_supported,
+                          size: 100,
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 8,
+                        right: 8,
+                        child: Container(
+                          color: Colors.black54,
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          child: Text(
+                            '1/${itemDetails!['photos'].length}',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
                   )
                 : Image.asset(
                     'assets/images/item.png',
@@ -128,53 +146,69 @@ class _DetailScreenState extends State<DetailScreen> {
                     fit: BoxFit.cover,
                   ),
             const SizedBox(height: 16),
-            Text(
-              itemDetails?['title'] ?? 'No Title',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            // Title and like button in a row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    itemDetails?['title'] ?? 'No Title',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: isFavorite ? Colors.red : Colors.grey,
+                    ),
+                    onPressed: _toggleLike,
+                  ),
+                ),
+                SizedBox(width: 4),
+                Text('${itemDetails?['likes'] ?? 0}', style: TextStyle(fontSize: 16)),
+              ],
             ),
             const SizedBox(height: 8),
             Text(
-              '${itemDetails?['price'] ?? '0'}원',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              '제품 상세 설명',
+              '${itemDetails?['price']?? 'N/A'}원',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
+            // Date
             Text(
-              itemDetails?['description'] ?? '(No detailed description available)',
-              style: TextStyle(fontSize: 14),
+              '올린 날짜: ${itemDetails?['date'] ?? 'N/A'}',
+              style: TextStyle(fontSize: 14, color: Colors.grey),
             ),
             const SizedBox(height: 8),
+            Divider(),
+            // Description
             Text(
-              '등록일: ${itemDetails?['date'] ?? 'N/A'}',
-              style: TextStyle(fontSize: 14),
+              itemDetails?['description'] ?? '제품 상세 설명이 없습니다.',
+              style: TextStyle(fontSize: 16),
             ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                IconButton(
-                  icon: Icon(
-                    isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: isFavorite ? Colors.red : Colors.grey,
-                  ),
-                  onPressed: _toggleLike,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  '좋아요 ${itemDetails?['likes'] ?? 0}개',
-                  style: TextStyle(fontSize: 14),
-                ),
-              ],
-            ),
+            const SizedBox(height: 16),
+            // Offer acceptance
+            if (itemDetails?['isOfferAccepted'] != null) ...[
+              Text(
+                itemDetails?['isOfferAccepted'] == true
+                    ? '가격 제안 가능'
+                    : '가격 제안 불가',
+                style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+              ),
+            ],
             const Spacer(),
+            // Chat button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Color(0xFF46823E)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF46823E),
                 ),
                 onPressed: () {
                   // Code to initiate chat

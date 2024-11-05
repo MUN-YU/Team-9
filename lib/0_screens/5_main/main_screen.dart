@@ -12,6 +12,13 @@ const Map<String, String> categoryMapping = {
   "기타": "OTHER",
 };
 
+// Utility function to truncate text to 7 characters with ellipsis
+String truncateText(String text, {int maxLength = 7}) {
+  return (text.length > maxLength)
+      ? '${text.substring(0, maxLength)}...'
+      : text;
+}
+
 class MainScreen extends StatefulWidget {
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -239,7 +246,6 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     // 조건에 맞는 결과가 없을 경우 빈 화면 메시지를 출력
     final itemsToShow =
@@ -288,7 +294,7 @@ class _MainScreenState extends State<MainScreen> {
                           items: departments.map((department) {
                             return DropdownMenuItem(
                               value: department,
-                              child: Text(department),
+                              child: Text(truncateText(department)),
                             );
                           }).toList(),
                           onChanged: (value) {
@@ -312,7 +318,7 @@ class _MainScreenState extends State<MainScreen> {
                           items: categories.map((category) {
                             return DropdownMenuItem(
                               value: category,
-                              child: Text(category),
+                              child: Text(truncateText(category)),
                             );
                           }).toList(),
                           onChanged: (value) {
@@ -342,7 +348,7 @@ class _MainScreenState extends State<MainScreen> {
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
                           child: Chip(
-                            label: Text(_selectedDepartment!),
+                            label: Text(truncateText(_selectedDepartment!)),
                             onDeleted: () {
                               setState(() {
                                 _selectedDepartment = null;
@@ -355,7 +361,7 @@ class _MainScreenState extends State<MainScreen> {
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
                           child: Chip(
-                            label: Text(_selectedCategory!),
+                            label: Text(truncateText(_selectedCategory!)),
                             onDeleted: () {
                               setState(() {
                                 _selectedCategory = null;
