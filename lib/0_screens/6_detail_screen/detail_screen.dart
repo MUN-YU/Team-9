@@ -23,12 +23,14 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   Future<void> _fetchItemDetails() async {
-    final url = Uri.parse('https://swe9.comit-server.com/items/detail/${widget.itemIdx}');
+    final url = Uri.parse(
+        'https://swe9.comit-server.com/items/detail/${widget.itemIdx}');
     try {
       final response = await http.get(
         url,
         headers: {
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0IiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwNzMyMjQxLCJleHAiOjE3NDYyODQyNDF9.6dyB5pxultEVmhBYSU9a8WWNrDwteCXwoTjiiM3M9SU'
+          'Authorization':
+              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0IiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwNzMyMjQxLCJleHAiOjE3NDYyODQyNDF9.6dyB5pxultEVmhBYSU9a8WWNrDwteCXwoTjiiM3M9SU'
         },
       );
 
@@ -53,7 +55,8 @@ class _DetailScreenState extends State<DetailScreen> {
       final response = await http.post(
         url,
         headers: {
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0IiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwNzMyMjQxLCJleHAiOjE3NDYyODQyNDF9.6dyB5pxultEVmhBYSU9a8WWNrDwteCXwoTjiiM3M9SU',
+          'Authorization':
+              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0IiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwNzMyMjQxLCJleHAiOjE3NDYyODQyNDF9.6dyB5pxultEVmhBYSU9a8WWNrDwteCXwoTjiiM3M9SU',
           'Content-Type': 'application/json',
         },
         body: json.encode({'itemIdx': widget.itemIdx}),
@@ -86,7 +89,8 @@ class _DetailScreenState extends State<DetailScreen> {
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              Navigator.pop(context, {'itemIdx': widget.itemIdx, 'isLiked': isFavorite});
+              Navigator.pop(
+                  context, {'itemIdx': widget.itemIdx, 'isLiked': isFavorite});
             },
           ),
         ),
@@ -98,11 +102,12 @@ class _DetailScreenState extends State<DetailScreen> {
       appBar: AppBar(
         backgroundColor: Color(0xFF46823E),
         title: Text(itemDetails?['sellerName'] ?? '판매자 이름',
-                    style: TextStyle(color: Colors.white)),
+            style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context, {'itemIdx': widget.itemIdx, 'isLiked': isFavorite});
+            Navigator.pop(
+                context, {'itemIdx': widget.itemIdx, 'isLiked': isFavorite});
           },
         ),
       ),
@@ -130,7 +135,8 @@ class _DetailScreenState extends State<DetailScreen> {
                         right: 8,
                         child: Container(
                           color: Colors.black54,
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
                           child: Text(
                             '1/${itemDetails!['photos'].length}',
                             style: TextStyle(color: Colors.white),
@@ -171,12 +177,13 @@ class _DetailScreenState extends State<DetailScreen> {
                   ),
                 ),
                 SizedBox(width: 4),
-                Text('${itemDetails?['likes'] ?? 0}', style: TextStyle(fontSize: 16)),
+                Text('${itemDetails?['likes'] ?? 0}',
+                    style: TextStyle(fontSize: 16)),
               ],
             ),
             const SizedBox(height: 8),
             Text(
-              '${itemDetails?['price']?? 'N/A'}원',
+              '${itemDetails?['price'] ?? 'N/A'}원',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
