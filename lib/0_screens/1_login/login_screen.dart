@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../5_main/main_screen.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -8,38 +9,24 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _isLoading = false; // 로딩 상태
+  bool _isLoading = false;
 
-  /*
-   * 로그인 함수
-  */
   Future<void> _login() async {
     setState(() {
       _isLoading = true;
     });
 
-    // 여기에 실제 로그인 로직 추가 (Firebase 등)
-    await Future.delayed(const Duration(seconds: 2)); // 가짜 로그인 로직 (2초 지연)
+    // 로그인 로직 (Firebase 등 추가 가능)
+    await Future.delayed(const Duration(seconds: 2)); // 가짜 로그인 처리
 
     setState(() {
       _isLoading = false;
     });
 
-    // 로그인 후 처리 (현재는 단순한 성공 메시지)
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Login Success"),
-          content: const Text("You have successfully logged in."),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text("OK"),
-            ),
-          ],
-        );
-      },
+    // 로그인 성공 후 메인 화면으로 이동
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => MainScreen()),
     );
   }
 
@@ -86,17 +73,18 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 28),
             _isLoading
-                ? const CircularProgressIndicator() // 로딩 중일 때 표시
+                ? const CircularProgressIndicator()
                 : SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(5),
-                            ),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(5),
                           ),
-                          backgroundColor: Color.fromARGB(255, 222, 211, 27)),
+                        ),
+                        backgroundColor: Color.fromARGB(255, 222, 211, 27),
+                      ),
                       onPressed: _login,
                       child: const Text(
                         "로그인",
