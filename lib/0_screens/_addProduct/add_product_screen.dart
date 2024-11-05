@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart'; // 사진 불러오기를 위한 패키지
 import 'package:intl/intl.dart'; // 가격 포맷팅을 위한 패키지
-
+import '../5_main/main_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
@@ -109,6 +109,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
         print('물품 등록 성공');
         final responseBody = await response.stream.bytesToString();
         print('응답: $responseBody');
+
+        // Navigate back to MainScreen after successful submission
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MainScreen()),
+        );
       } else {
         final responseBody = await response.stream.bytesToString();
         print('물품 등록 실패: ${response.statusCode}');

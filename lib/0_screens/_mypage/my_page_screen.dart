@@ -1,6 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../5_main/main_screen.dart';
+
+// Define a mock for ChatPage and ListPage for navigation example
+class ChatPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: Text("Chat Page"));
+  }
+}
+
+class ListPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: Text("List Page"));
+  }
+}
 
 class MyPageScreen extends StatefulWidget {
   const MyPageScreen({super.key});
@@ -11,11 +27,11 @@ class MyPageScreen extends StatefulWidget {
 
 class _MyPageScreenState extends State<MyPageScreen> {
   bool _isLoading = false; // 로딩 상태
-  var _index = 0;
-  var _pages = [
-    //ChatPage(), // 채팅 목록 페이지
-    //ListPage(), // 물품 목록 페이지
-    MyPage()
+  int _index = 2;
+  final List<Widget> _pages = [
+    ChatPage(), // 채팅 목록 페이지
+    MainScreen(), // 물품 목록 페이지 (홈)
+    MyPageScreenContent(), // 마이페이지
   ];
 
   String? profileImage;
@@ -35,7 +51,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
       url,
       headers: {
         "Authorization":
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2IiwidXNlcm5hbWUiOiJoYW5uYWhzIiwiaWF0IjoxNzMwNzg1ODY3LCJleHAiOjE3NDYzMzc4Njd9.gg7du8q1QBPDl5dT8gYxJsScNpBOkrn3tbVkCQjG544",
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwODIyMTk1LCJleHAiOjE3NDYzNzQxOTV9.u_MXeLFQh-C3PbGa3ky16SlkKJgTTcj5W5HqF_XdmHM",
       },
     );
 
@@ -56,53 +72,28 @@ class _MyPageScreenState extends State<MyPageScreen> {
     }
   }
 
+  void _onItemTapped(int index) {
+    setState(() {
+      _index = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 20, 37, 26),
-      appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: Text(
-            '마이 페이지',
-            style: TextStyle(color: Colors.black),
-          ),
-          centerTitle: true,
-          leading: const IconButton(
-            icon: Icon(Icons.menu, color: Colors.black),
-            onPressed: null, // 더보기 버튼 구현하기
-          )),
-      body: MyPage(
-        profileImage: profileImage,
-        name: name,
-        major: major,
-        rating: rating,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: (index) {
-          setState(() {
-            _index = index;
-          });
-        },
-        currentIndex: _index,
-        selectedItemColor: Color.fromARGB(255, 20, 37, 26),
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(label: '채팅', icon: Icon(Icons.chat_outlined)),
-          BottomNavigationBarItem(label: '홈', icon: Icon(Icons.home)),
-          BottomNavigationBarItem(
-              label: '마이페이지', icon: Icon(Icons.person_outline)),
-        ],
-      ),
+      body: _pages[_index],
     );
   }
 }
 
-class MyPage extends StatelessWidget {
+class MyPageScreenContent extends StatelessWidget {
   final String? profileImage;
   final String? name;
   final String? major;
   final double? rating;
 
-  const MyPage({
+  const MyPageScreenContent({
     Key? key,
     this.profileImage,
     this.name,

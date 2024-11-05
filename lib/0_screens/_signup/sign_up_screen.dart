@@ -1,12 +1,7 @@
-import 'dart:ffi';
-
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-import 'dart:io';
-
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import '../1_login/login_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -16,14 +11,14 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final bool _isLoading = false; // 로딩 상태
-  final _nameController = TextEditingController(); // 이름
-  final _idController = TextEditingController(); // 아이디
-  final _pwController = TextEditingController(); // 비밀번호
+  final bool _isLoading = false;
+  final _nameController = TextEditingController();
+  final _idController = TextEditingController();
+  final _pwController = TextEditingController();
   final _confirmPwController = TextEditingController();
   String? _passwordError;
-  String? _selectedMajor; //학과
-  final _emailController = TextEditingController(); // 이메일
+  String? _selectedMajor;
+  final _emailController = TextEditingController();
   String? _emailError;
   bool _isValid = false;
 
@@ -127,6 +122,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       if (response.statusCode == 201) {
         print('회원가입 성공: ${response.body}');
+
+        // Navigate back to the LoginScreen after successful sign-up
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        );
       } else {
         print('회원가입 실패: ${response.statusCode}, ${response.body}');
       }
@@ -149,7 +150,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => LoginPage()),
+            );
           },
         ),
       ),
@@ -249,7 +253,6 @@ class SignUp extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        // 이름 입력
         const Text('이름', style: TextStyle(fontSize: 20)),
         const SizedBox(height: 6),
         TextField(
@@ -269,8 +272,6 @@ class SignUp extends StatelessWidget {
         const SizedBox(height: 10),
         const Divider(color: Colors.grey, thickness: 1),
         const SizedBox(height: 10),
-
-        // 아이디 입력
         const Text('아이디', style: TextStyle(fontSize: 20)),
         const SizedBox(height: 6),
         TextField(
@@ -290,8 +291,6 @@ class SignUp extends StatelessWidget {
         const SizedBox(height: 10),
         const Divider(color: Colors.grey, thickness: 1),
         const SizedBox(height: 10),
-
-        // 비밀번호 입력
         const Text('비밀번호', style: TextStyle(fontSize: 20)),
         const SizedBox(height: 6),
         TextField(
@@ -311,8 +310,6 @@ class SignUp extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 15),
-
-        // 비밀번호 확인
         const Text('비밀번호 확인', style: TextStyle(fontSize: 20)),
         const SizedBox(height: 6),
         TextField(
@@ -335,40 +332,33 @@ class SignUp extends StatelessWidget {
         const SizedBox(height: 10),
         const Divider(color: Colors.grey, thickness: 1),
         const SizedBox(height: 10),
-
-        // 학과 선택
         const Text('학과', style: TextStyle(fontSize: 20)),
         const SizedBox(height: 8),
-        ButtonTheme(
-          alignedDropdown: true,
-          child: DropdownButtonFormField<String>(
-            value: selectedMajor,
-            hint: const Text('학과 선택'),
-            items: majors.map((String major) {
-              return DropdownMenuItem<String>(
-                value: major,
-                child: Text(major),
-              );
-            }).toList(),
-            onChanged: onMajorChanged,
-            dropdownColor: Colors.white,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: borderColor),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: borderColor, width: 2.0),
-              ),
+        DropdownButtonFormField<String>(
+          value: selectedMajor,
+          hint: const Text('학과 선택'),
+          items: majors.map((String major) {
+            return DropdownMenuItem<String>(
+              value: major,
+              child: Text(major),
+            );
+          }).toList(),
+          onChanged: onMajorChanged,
+          dropdownColor: Colors.white,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.white,
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: borderColor),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: borderColor, width: 2.0),
             ),
           ),
         ),
         const SizedBox(height: 10),
         const Divider(color: Colors.grey, thickness: 1),
         const SizedBox(height: 10),
-
-        // 이메일 입력
         const Text('학교 이메일 입력', style: TextStyle(fontSize: 20)),
         const SizedBox(height: 8),
         TextField(

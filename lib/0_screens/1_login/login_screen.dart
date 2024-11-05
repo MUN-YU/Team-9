@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../_signup/sign_up_screen.dart';
 import '../5_main/main_screen.dart';
 
 class LoginPage extends StatefulWidget {
@@ -16,17 +17,24 @@ class _LoginPageState extends State<LoginPage> {
       _isLoading = true;
     });
 
-    // 로그인 로직 (Firebase 등 추가 가능)
-    await Future.delayed(const Duration(seconds: 2)); // 가짜 로그인 처리
+    // Simulated login logic
+    await Future.delayed(const Duration(seconds: 2)); // Fake login delay
 
     setState(() {
       _isLoading = false;
     });
 
-    // 로그인 성공 후 메인 화면으로 이동
+    // Navigate to MainScreen after successful login
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => MainScreen()),
+    );
+  }
+
+  void _navigateToSignUp() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SignUpScreen()),
     );
   }
 
@@ -89,10 +97,19 @@ class _LoginPageState extends State<LoginPage> {
                       child: const Text(
                         "로그인",
                         style: TextStyle(
-                            color: const Color.fromARGB(255, 20, 37, 26)),
+                          color: Color.fromARGB(255, 20, 37, 26),
+                        ),
                       ),
                     ),
                   ),
+            const SizedBox(height: 16),
+            TextButton(
+              onPressed: _navigateToSignUp,
+              child: const Text(
+                "회원가입",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
             const Spacer(flex: 2),
           ],
         ),

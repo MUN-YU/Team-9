@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../_addProduct/add_product_screen.dart';
 import '../7_search_screen/search_screen.dart';
 import '../6_detail_screen/detail_screen.dart';
 import '../10_user_update_screen/user_update_screen.dart';
+import '../_mypage/my_page_screen.dart';
 
 // Define category mapping for dropdown selection
 const Map<String, String> categoryMapping = {
@@ -30,6 +32,7 @@ class _MainScreenState extends State<MainScreen> {
   List<dynamic> _items = []; // Full item list
   List<dynamic> _filteredItems = []; // Filtered item list for search results
   Set<int> likedItems = {}; // Set to store liked item indices
+  final PageController _pageController = PageController(initialPage: 1);
 
   String? _selectedDepartment;
   String? _selectedCategory;
@@ -90,12 +93,7 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _fetchLikedItems();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _fetchItems(); // Fetch items each time MainScreen is opened
+    _fetchItems();
   }
 
   Future<void> _fetchLikedItems() async {
@@ -105,7 +103,7 @@ class _MainScreenState extends State<MainScreen> {
         url,
         headers: {
           'Authorization':
-              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0IiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwNzMyMjQxLCJleHAiOjE3NDYyODQyNDF9.6dyB5pxultEVmhBYSU9a8WWNrDwteCXwoTjiiM3M9SU'
+              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwODIwOTA0LCJleHAiOjE3NDYzNzI5MDR9.1TfEKkFxBgJ2HiHy05klS2C4YU3FCNsNK1-JrqSJEEI',
         },
       );
 
@@ -130,7 +128,7 @@ class _MainScreenState extends State<MainScreen> {
         url,
         headers: {
           'Authorization':
-              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0IiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwNzMyMjQxLCJleHAiOjE3NDYyODQyNDF9.6dyB5pxultEVmhBYSU9a8WWNrDwteCXwoTjiiM3M9SU'
+              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwODIwOTA0LCJleHAiOjE3NDYzNzI5MDR9.1TfEKkFxBgJ2HiHy05klS2C4YU3FCNsNK1-JrqSJEEI',
         },
       );
 
@@ -138,10 +136,9 @@ class _MainScreenState extends State<MainScreen> {
         final decodedData = json.decode(utf8.decode(response.bodyBytes));
         setState(() {
           _items = decodedData['content'];
-          _filteredItems = _items; // Initialize filteredItems with all items
-          _filterItems(); // Apply initial filtering
+          _filteredItems = _items;
+          _filterItems();
         });
-        print('Items loaded successfully');
       } else {
         print('Failed to load items: ${response.statusCode}');
       }
@@ -158,13 +155,8 @@ class _MainScreenState extends State<MainScreen> {
         final selectedCategoryKey = categoryMapping[_selectedCategory];
         final matchesCategory = _selectedCategory == null ||
             item['category'] == selectedCategoryKey;
-
         return matchesDepartment && matchesCategory;
       }).toList();
-
-      // 필터링된 결과를 출력하여 확인
-      print("Filtered Items Count: ${_filteredItems.length}");
-      print("Filtered Items: $_filteredItems");
     });
   }
 
@@ -175,7 +167,7 @@ class _MainScreenState extends State<MainScreen> {
         url,
         headers: {
           'Authorization':
-              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0IiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwNzMyMjQxLCJleHAiOjE3NDYyODQyNDF9.6dyB5pxultEVmhBYSU9a8WWNrDwteCXwoTjiiM3M9SU',
+              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwODIwOTA0LCJleHAiOjE3NDYzNzI5MDR9.1TfEKkFxBgJ2HiHy05klS2C4YU3FCNsNK1-JrqSJEEI',
           'Content-Type': 'application/json',
         },
         body: json.encode({'itemIdx': itemIdx}),
@@ -184,12 +176,11 @@ class _MainScreenState extends State<MainScreen> {
       if (response.statusCode == 200) {
         setState(() {
           if (likedItems.contains(itemIdx)) {
-            likedItems.remove(itemIdx); // Unlike
+            likedItems.remove(itemIdx);
           } else {
-            likedItems.add(itemIdx); // Like
+            likedItems.add(itemIdx);
           }
         });
-        print('Toggled like for item $itemIdx');
       } else {
         print('Failed to toggle like: ${response.statusCode}');
       }
@@ -228,7 +219,7 @@ class _MainScreenState extends State<MainScreen> {
     if (result != null && result is Map<String, dynamic>) {
       setState(() {
         _filteredItems = result['filteredItems'] ?? _items;
-        _searchQuery = result['query']; // Capture search query
+        _searchQuery = result['query'];
       });
     }
   }
@@ -236,7 +227,7 @@ class _MainScreenState extends State<MainScreen> {
   void _clearSearchFilter() {
     setState(() {
       _searchQuery = null;
-      _filteredItems = _items; // Reset to show all items
+      _filteredItems = _items;
     });
   }
 
@@ -244,11 +235,11 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       _selectedIndex = index;
     });
+    _pageController.jumpToPage(index);
   }
 
   @override
   Widget build(BuildContext context) {
-    // 조건에 맞는 결과가 없을 경우 빈 화면 메시지를 출력
     final itemsToShow =
         (_selectedDepartment != null || _selectedCategory != null)
             ? _filteredItems
@@ -258,18 +249,38 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         backgroundColor: Colors.green[700],
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.menu),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => UserUpdateScreen()),
-            );
-          },
-        ),
-        title: Text(
-          '성대한 마켓',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                  right: 16.0), // Adds spacing between button and title
+              child: TextButton.icon(
+                icon: Icon(Icons.add, color: Colors.white, size: 24),
+                label: Text(
+                  "물품등록",
+                  style: TextStyle(color: Colors.white, fontSize: 14),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddProductScreen()),
+                  );
+                },
+                style: TextButton.styleFrom(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                  minimumSize: Size(80, 40), // Minimum width and height
+                ),
+              ),
+            ),
+            Expanded(
+              child: Text(
+                '성대한 마켓',
+                style: TextStyle(fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
         ),
         actions: [
           IconButton(
@@ -282,182 +293,187 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
       ),
-      body: _selectedIndex == 1
-          ? Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 16.0),
-                  color: Colors.grey[100],
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Flexible(
-                        child: DropdownButton<String>(
-                          isExpanded: true,
-                          hint: const Text('학과'),
-                          value: _selectedDepartment,
-                          items: departments.map((department) {
-                            return DropdownMenuItem(
-                              value: department,
-                              child: Text(truncateText(department)),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedDepartment = value;
-                            });
-                            _filterItems(); // Apply filtering based on department
-                          },
-                          underline: Container(
-                            height: 1,
-                            color: Colors.grey,
-                          ),
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        children: [
+          Center(child: Text("채팅 화면 구현 예정")),
+          Column(
+            children: [
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                color: Colors.grey[100],
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Flexible(
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        hint: const Text('학과'),
+                        value: _selectedDepartment,
+                        items: departments.map((department) {
+                          return DropdownMenuItem(
+                            value: department,
+                            child: Text(truncateText(department)),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedDepartment = value;
+                          });
+                          _filterItems();
+                        },
+                        underline: Container(
+                          height: 1,
+                          color: Colors.grey,
                         ),
                       ),
-                      SizedBox(width: 8),
-                      Flexible(
-                        child: DropdownButton<String>(
-                          isExpanded: true,
-                          hint: const Text('카테고리'),
-                          value: _selectedCategory,
-                          items: categories.map((category) {
-                            return DropdownMenuItem(
-                              value: category,
-                              child: Text(truncateText(category)),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedCategory = value;
-                            });
-                            _filterItems(); // Apply filtering based on category
-                          },
-                          underline: Container(
-                            height: 1,
-                            color: Colors.grey,
-                          ),
+                    ),
+                    SizedBox(width: 8),
+                    Flexible(
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        hint: const Text('카테고리'),
+                        value: _selectedCategory,
+                        items: categories.map((category) {
+                          return DropdownMenuItem(
+                            value: category,
+                            child: Text(truncateText(category)),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedCategory = value;
+                          });
+                          _filterItems();
+                        },
+                        underline: Container(
+                          height: 1,
+                          color: Colors.grey,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                Divider(height: 1, color: Colors.grey[300]),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 16.0),
-                  child: Row(
-                    children: [
-                      Text("현재 필터: ",
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      if (_selectedDepartment != null)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Chip(
-                            label: Text(truncateText(_selectedDepartment!)),
-                            onDeleted: () {
-                              setState(() {
-                                _selectedDepartment = null;
-                              });
-                              _filterItems();
-                            },
-                          ),
+              ),
+              Divider(height: 1, color: Colors.grey[300]),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                child: Row(
+                  children: [
+                    Text("현재 필터: ",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    if (_selectedDepartment != null)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Chip(
+                          label: Text(truncateText(_selectedDepartment!)),
+                          onDeleted: () {
+                            setState(() {
+                              _selectedDepartment = null;
+                            });
+                            _filterItems();
+                          },
                         ),
-                      if (_selectedCategory != null)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Chip(
-                            label: Text(truncateText(_selectedCategory!)),
-                            onDeleted: () {
-                              setState(() {
-                                _selectedCategory = null;
-                              });
-                              _filterItems();
-                            },
-                          ),
+                      ),
+                    if (_selectedCategory != null)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Chip(
+                          label: Text(truncateText(_selectedCategory!)),
+                          onDeleted: () {
+                            setState(() {
+                              _selectedCategory = null;
+                            });
+                            _filterItems();
+                          },
                         ),
-                      if (_searchQuery != null)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Chip(
-                            label: Text('검색어: $_searchQuery'),
-                            onDeleted:
-                                _clearSearchFilter, // Clear search filter
-                          ),
+                      ),
+                    if (_searchQuery != null)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Chip(
+                          label: Text('검색어: $_searchQuery'),
+                          onDeleted: _clearSearchFilter,
                         ),
-                    ],
-                  ),
+                      ),
+                  ],
                 ),
-                Expanded(
-                  child: itemsToShow.isEmpty
-                      ? Center(
-                          child: Text(
-                            '조건에 맞는 물품이 없습니다.',
-                            style: TextStyle(fontSize: 18, color: Colors.grey),
-                          ),
-                        )
-                      : ListView.builder(
-                          itemCount: itemsToShow.length,
-                          itemBuilder: (context, index) {
-                            final item = itemsToShow[index];
-                            final isLiked =
-                                likedItems.contains(item['itemIdx']);
-                            return Card(
-                              margin: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              child: ListTile(
-                                contentPadding: EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 15),
-                                leading: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  child: Image.network(
-                                    item['itemImage'],
-                                    width: 70,
-                                    height: 70,
-                                    fit: BoxFit.cover,
-                                    errorBuilder:
-                                        (context, error, stackTrace) => Icon(
-                                            Icons.image_not_supported,
-                                            size: 50),
-                                  ),
+              ),
+              Expanded(
+                child: itemsToShow.isEmpty
+                    ? Center(
+                        child: Text(
+                          '조건에 맞는 물품이 없습니다.',
+                          style: TextStyle(fontSize: 18, color: Colors.grey),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: itemsToShow.length,
+                        itemBuilder: (context, index) {
+                          final item = itemsToShow[index];
+                          final isLiked = likedItems.contains(item['itemIdx']);
+                          return Card(
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: ListTile(
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 15),
+                              leading: ClipRRect(
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: Image.network(
+                                  item['itemImage'],
+                                  width: 70,
+                                  height: 70,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Icon(Icons.image_not_supported, size: 50),
                                 ),
-                                title: Text(
-                                  item['title'],
+                              ),
+                              title: Text(
+                                item['title'],
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                              subtitle: Padding(
+                                padding: const EdgeInsets.only(top: 5.0),
+                                child: Text(
+                                  '${item['price']}원',
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
+                                      fontSize: 14, color: Colors.grey[700]),
                                 ),
-                                subtitle: Padding(
-                                  padding: const EdgeInsets.only(top: 5.0),
-                                  child: Text(
-                                    '${item['price']}원',
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.grey[700]),
-                                  ),
-                                ),
-                                trailing: IconButton(
-                                  icon: Icon(
-                                    isLiked
-                                        ? Icons.favorite
-                                        : Icons.favorite_border,
-                                    color: isLiked ? Colors.red : Colors.grey,
-                                  ),
-                                  onPressed: () {
-                                    _toggleLike(item['itemIdx']);
-                                  },
-                                ),
-                                onTap: () => _navigateToDetail(item['itemIdx']),
                               ),
-                            );
-                          },
-                        ),
-                ),
-              ],
-            )
-          : Center(child: Text('Other Page Content')),
+                              trailing: IconButton(
+                                icon: Icon(
+                                  isLiked
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color: isLiked ? Colors.red : Colors.grey,
+                                ),
+                                onPressed: () {
+                                  _toggleLike(item['itemIdx']);
+                                },
+                              ),
+                              onTap: () => _navigateToDetail(item['itemIdx']),
+                            ),
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
+          MyPageScreen(),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
