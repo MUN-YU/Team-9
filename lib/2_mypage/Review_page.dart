@@ -180,13 +180,20 @@ class _ReviewPageState extends State<ReviewPage> {
                             ),
                           ),
                           Expanded(
-                            flex:2,
+                            flex:1,
                             child: Text(
                               product['description'],
                               textAlign: TextAlign.left,
                             ),
                           ),
                           const Spacer(),
+                          Expanded(
+                            flex:1,
+                            child: Text(
+                              product['transactionDate'],
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
                           Expanded(
                             flex:1,
                             child: Text(

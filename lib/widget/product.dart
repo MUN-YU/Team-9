@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grand_market/2_mypage/Review_page.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Product extends StatefulWidget {
   final Function(int) delete;
@@ -31,10 +33,14 @@ class Product extends StatefulWidget {
 
 class HeartButton extends StatefulWidget {
   final bool isliked;
+  final String token;
+  final int itemIdx;
 
   const HeartButton({
     Key? key,
     required this.isliked,
+    required this.token,
+    required this.itemIdx,
   }) : super(key: key);
 
   @override
@@ -89,10 +95,10 @@ class _ProductState extends State<Product> {
 
     switch(_type){
       case 0:
-        dynamicwidget=HeartButton(isliked: false);
+        dynamicwidget=HeartButton(isliked: false, token: widget.token, itemIdx: _product_id,);
         break;
       case 1:
-        dynamicwidget=HeartButton(isliked: true);
+        dynamicwidget=HeartButton(isliked: true, token: widget.token, itemIdx: _product_id);
         break;
       case 2:
         dynamicwidget=Rem_ModButton(onpressed: _delete);
@@ -192,12 +198,45 @@ class _ProductState extends State<Product> {
 }
 
 class _HeartButtonState extends State<HeartButton> {
-  // 상태 변수를 정의합니다. 초기값은 false (빈 하트)
   bool _isLiked = false;
 
   void initState() {
     super.initState();
     _isLiked=widget.isliked;
+  }
+
+  Future<void> togglelikes(String token, int itemIdx) async {
+    final url = Uri.parse('https://swe9.comit-server.com/items/likes');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode({
+          "itemIdx": itemIdx
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print('Data received: $data');
+
+        if (data['status'] == 200) {
+          setState(() {
+              _isLiked = !_isLiked; // 하트 상태를 반전시킴
+            });
+        } else {
+          print('Error: ${data['message']}');
+        }
+      } else {
+        print('Failed to load data: ${response.statusCode} ${response.body}');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
+    }
   }
 
   @override
@@ -211,9 +250,7 @@ class _HeartButtonState extends State<HeartButton> {
             size: 50, // 아이콘 크기
           ),
           onPressed: () {
-            setState(() {
-              _isLiked = !_isLiked; // 하트 상태를 반전시킴
-            });
+            togglelikes(widget.token, widget.itemIdx);
           },
         ),
       );
@@ -251,7 +288,7 @@ class _Rem_ModButtonState extends State<Rem_ModButton>{
       Container(
         padding: const EdgeInsets.all(5),
         child: TextButton(
-          onPressed: (){print("modity");},
+          onPressed: (){print("modity");},  //수정 화면으로 넘어가야함 //물품 등록 페이지에서 하단 버튼만 수정하기로 변경
           style: TextButton.styleFrom(
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.zero), // 모서리를 각지게 설정
