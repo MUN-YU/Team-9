@@ -4,21 +4,6 @@ import 'dart:convert';
 import '../5_main/main_screen.dart';
 import '../10_user_update_screen/user_update_screen.dart';
 
-// Define a mock for ChatPage and ListPage for navigation example
-class ChatPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: Text("Chat Page"));
-  }
-}
-
-class ListPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: Text("List Page"));
-  }
-}
-
 class MyPageScreen extends StatefulWidget {
   const MyPageScreen({super.key});
 
@@ -28,13 +13,6 @@ class MyPageScreen extends StatefulWidget {
 
 class _MyPageScreenState extends State<MyPageScreen> {
   bool _isLoading = false; // 로딩 상태
-  int _index = 2;
-  final List<Widget> _pages = [
-    ChatPage(), // 채팅 목록 페이지
-    MainScreen(), // 물품 목록 페이지 (홈)
-    MyPageScreenContent(), // 마이페이지
-  ];
-
   String? profileImage;
   String? name;
   String? major;
@@ -52,7 +30,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
       url,
       headers: {
         "Authorization":
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwODIyMTk1LCJleHAiOjE3NDYzNzQxOTV9.u_MXeLFQh-C3PbGa3ky16SlkKJgTTcj5W5HqF_XdmHM",
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0IiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwNzMyMjQxLCJleHAiOjE3NDYyODQyNDF9.6dyB5pxultEVmhBYSU9a8WWNrDwteCXwoTjiiM3M9SU",
       },
     );
 
@@ -73,53 +51,29 @@ class _MyPageScreenState extends State<MyPageScreen> {
     }
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _index = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 20, 37, 26),
-      body: _pages[_index],
-    );
-  }
-}
-
-class MyPageScreenContent extends StatelessWidget {
-  final String? profileImage;
-  final String? name;
-  final String? major;
-  final double? rating;
-
-  const MyPageScreenContent({
-    Key? key,
-    this.profileImage,
-    this.name,
-    this.major,
-    this.rating,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Flexible(
-          flex: 5,
-          child: MyProfile(
-            profileImage: profileImage,
-            name: name,
-            major: major,
-            rating: rating,
-          ),
-        ),
-        Flexible(
-          flex: 5,
-          child: MySales(),
-        ),
-      ],
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : Column(
+              children: <Widget>[
+                Flexible(
+                  flex: 5,
+                  child: MyProfile(
+                    profileImage: profileImage,
+                    name: name,
+                    major: major,
+                    rating: rating,
+                  ),
+                ),
+                Flexible(
+                  flex: 5,
+                  child: MySales(),
+                )
+              ],
+            ),
     );
   }
 }
