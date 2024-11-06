@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../_signup/sign_up_screen.dart';
+import '../5_main/main_screen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -10,38 +12,31 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _isLoading = false; // 로딩 상태
+  bool _isLoading = false;
 
-  /*
-   * 로그인 함수
-  */
   Future<void> _login() async {
     setState(() {
       _isLoading = true;
     });
 
-    // 여기에 실제 로그인 로직 추가 (Firebase 등)
-    await Future.delayed(const Duration(seconds: 2)); // 가짜 로그인 로직 (2초 지연)
+    // Simulated login logic
+    await Future.delayed(const Duration(seconds: 2)); // Fake login delay
 
     setState(() {
       _isLoading = false;
     });
 
-    // 로그인 후 처리 (현재는 단순한 성공 메시지)
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Login Success"),
-          content: const Text("You have successfully logged in."),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text("OK"),
-            ),
-          ],
-        );
-      },
+    // Navigate to MainScreen after successful login
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => MainScreen()),
+    );
+  }
+
+  void _navigateToSignUp() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => SignUpScreen()),
     );
   }
 
@@ -68,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
             TextField(
               controller: _idController,
               decoration: const InputDecoration(
-                labelText: "계정",
+                labelText: "아이디",
                 border: OutlineInputBorder(),
                 fillColor: Colors.white,
                 filled: true,
@@ -88,25 +83,35 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 28),
             _isLoading
-                ? const CircularProgressIndicator() // 로딩 중일 때 표시
+                ? const CircularProgressIndicator()
                 : SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(5),
-                            ),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(5),
                           ),
-                          backgroundColor: const Color.fromARGB(255, 222, 211, 27)),
+                        ),
+                        backgroundColor: Color.fromARGB(255, 222, 211, 27),
+                      ),
                       onPressed: _login,
                       child: const Text(
                         "로그인",
                         style: TextStyle(
-                            color: Color.fromARGB(255, 20, 37, 26)),
+                          color: Color.fromARGB(255, 20, 37, 26),
+                        ),
                       ),
                     ),
                   ),
+            const SizedBox(height: 16),
+            TextButton(
+              onPressed: _navigateToSignUp,
+              child: const Text(
+                "회원가입",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
             const Spacer(flex: 2),
           ],
         ),
