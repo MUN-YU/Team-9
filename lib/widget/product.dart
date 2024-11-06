@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:grand_market/2_mypage/Review_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../0_screens/6_detail_screen/detail_screen.dart';
 
 class Product extends StatefulWidget {
   final Function(int) delete;
@@ -109,7 +110,8 @@ class _ProductState extends State<Product> {
     return 
         GestureDetector(
           onTap: () {
-            print("click!!");  //->제품 상세 목록으로 이동
+            Navigator.push(
+              context, MaterialPageRoute(builder: (context) => DetailScreen(itemIdx: _product_id,)));
           },
           child: Center(
             child: Container(
