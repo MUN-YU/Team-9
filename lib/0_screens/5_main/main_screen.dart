@@ -5,6 +5,7 @@ import '../_addProduct/add_product_screen.dart';
 import '../7_search_screen/search_screen.dart';
 import '../6_detail_screen/detail_screen.dart';
 import '../10_user_update_screen/user_update_screen.dart';
+import '../9_chat_list/chat_list_screen.dart';
 import '../_mypage/my_page_screen.dart';
 
 // Define category mapping for dropdown selection
@@ -303,7 +304,10 @@ class _MainScreenState extends State<MainScreen> {
           });
         },
         children: [
-          Center(child: Text("채팅 화면 구현 예정")),
+          // 채팅 목록 화면 (ChatListScreen)
+          ChatListScreen(),
+
+          // 홈 화면 - 필터와 아이템 리스트 표시
           Column(
             children: [
               Container(
@@ -473,6 +477,8 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ],
           ),
+
+          // 마이 페이지 (MyPageScreen)
           MyPageScreen(),
         ],
       ),
