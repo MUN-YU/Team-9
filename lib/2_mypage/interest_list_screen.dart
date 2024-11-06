@@ -4,9 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class InterestListScreen extends StatefulWidget {
-  final String token;
-
-  const InterestListScreen({super.key, required this.token});
+  const InterestListScreen({super.key});
 
   @override
   _InterestListScreenState createState() => _InterestListScreenState();
@@ -18,18 +16,18 @@ class _InterestListScreenState extends State<InterestListScreen> {
   @override
   void initState(){
     super.initState();
-    fetchProducts(widget.token);
+    fetchProducts();
   }
 
-  Future<void> fetchProducts(String token) async {
+  Future<void> fetchProducts() async {
     final url = Uri.parse('https://swe9.comit-server.com/mypage/likes');
-    print('$token');
 
     try {
       final response = await http.get(
         url,
-        headers: {
-          'Authorization': 'Bearer $token',
+        headers: {'Content-Type': 'application/json',
+        "Authorization":
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwODIyMTk1LCJleHAiOjE3NDYzNzQxOTV9.u_MXeLFQh-C3PbGa3ky16SlkKJgTTcj5W5HqF_XdmHM",
         },
       );
 
@@ -77,7 +75,6 @@ class _InterestListScreenState extends State<InterestListScreen> {
             return Padding(
                 padding: const EdgeInsets.all(5),
                 child: Product(
-                  token: widget.token,
                   type: 1,
                   product_id: product['itemIdx'],
                   image_link: product['itemImage'], 

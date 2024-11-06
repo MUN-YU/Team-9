@@ -21,7 +21,10 @@ class _Mypage_testState extends State<Mypage_test> {
     try {
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',
+        "Authorization":
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwODIyMTk1LCJleHAiOjE3NDYzNzQxOTV9.u_MXeLFQh-C3PbGa3ky16SlkKJgTTcj5W5HqF_XdmHM",
+      },
         body: jsonEncode({
           "name": "testname",
           "id": "testid",
@@ -49,7 +52,9 @@ class _Mypage_testState extends State<Mypage_test> {
     try {
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',
+        "Authorization":
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwODIyMTk1LCJleHAiOjE3NDYzNzQxOTV9.u_MXeLFQh-C3PbGa3ky16SlkKJgTTcj5W5HqF_XdmHM",},
         body: jsonEncode({
           "id": "testid",
           "password": "12345678",
@@ -99,7 +104,7 @@ class _Mypage_testState extends State<Mypage_test> {
                     ),
                     backgroundColor: const Color.fromARGB(255, 222, 211, 27)),
                 onPressed: (){Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => InterestListScreen(token: _token)));
+                  context, MaterialPageRoute(builder: (context) => InterestListScreen()));
                   },
                 child: const Text(
                   "관심목록",
@@ -120,7 +125,7 @@ class _Mypage_testState extends State<Mypage_test> {
                     ),
                     backgroundColor: const Color.fromARGB(255, 222, 211, 27)),
                 onPressed: (){Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => SalesListScreen(token: _token)));
+                  context, MaterialPageRoute(builder: (context) => SalesListScreen()));
                   },
                 child: const Text(
                   "판매목록",
@@ -141,7 +146,7 @@ class _Mypage_testState extends State<Mypage_test> {
                     ),
                     backgroundColor: const Color.fromARGB(255, 222, 211, 27)),
                 onPressed: (){Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => TransactionListScreen(token: _token)));
+                  context, MaterialPageRoute(builder: (context) => TransactionListScreen()));
                   },
                 child: const Text(
                   "거래목록",

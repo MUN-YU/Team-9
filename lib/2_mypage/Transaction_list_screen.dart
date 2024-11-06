@@ -4,9 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class TransactionListScreen extends StatefulWidget {
-  final String token;
-  
-  const TransactionListScreen({super.key, required this.token});
+  const TransactionListScreen({super.key});
 
   @override
   _TransactionListScreenState createState() => _TransactionListScreenState();
@@ -18,17 +16,18 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
   @override
   void initState(){
     super.initState();
-    fetchProducts(widget.token);
+    fetchProducts();
   }
 
-  Future<void> fetchProducts(String token) async {
+  Future<void> fetchProducts() async {
     final url = Uri.parse('https://swe9.comit-server.com/mypage/buying');
 
     try {
       final response = await http.get(
         url,
         headers: {
-          'Authorization': 'Bearer $token',
+          "Authorization":
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwODIyMTk1LCJleHAiOjE3NDYzNzQxOTV9.u_MXeLFQh-C3PbGa3ky16SlkKJgTTcj5W5HqF_XdmHM",
         },
       );
 
@@ -76,7 +75,6 @@ class _TransactionListScreenState extends State<TransactionListScreen> {
               return Padding(
                 padding: const EdgeInsets.all(5),
                 child: Product(
-                token: widget.token,
                 type: 3, 
                 product_id: product['itemIdx'],
                 image_link: product['itemImage'], 

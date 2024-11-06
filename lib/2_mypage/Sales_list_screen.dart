@@ -4,9 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class SalesListScreen extends StatefulWidget {
-  final String token;
-
-  const SalesListScreen({super.key, required this.token});
+  const SalesListScreen({super.key});
 
   @override
   _SalesListScreenState createState() => _SalesListScreenState();
@@ -19,21 +17,22 @@ class _SalesListScreenState extends State<SalesListScreen> {
   @override
   void initState(){
     super.initState();
-    fetchProducts(widget.token);
+    fetchProducts();
   }
 
   void _updatepage(int product_id) {
-    deleteProduct(widget.token, product_id);
+    deleteProduct(product_id);
   }
 
-  Future<void> fetchProducts(String token) async {
+  Future<void> fetchProducts() async {
     final url = Uri.parse('https://swe9.comit-server.com/mypage/selling');
 
     try {
       final response = await http.get(
         url,
         headers: {
-          'Authorization': 'Bearer $token',
+          "Authorization":
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwODIyMTk1LCJleHAiOjE3NDYzNzQxOTV9.u_MXeLFQh-C3PbGa3ky16SlkKJgTTcj5W5HqF_XdmHM",
           'Content-Type': 'application/json; charset=UTF-8',
         },
       );
@@ -61,14 +60,15 @@ class _SalesListScreenState extends State<SalesListScreen> {
     }
   }
 
-  Future<void> deleteProduct(String token, int itemIdx) async {
+  Future<void> deleteProduct(int itemIdx) async {
     final url = Uri.parse('https://swe9.comit-server.com/mypage/selling/'+itemIdx.toString());
 
     try {
       final response = await http.delete(
         url,
         headers: {
-          'Authorization': 'Bearer $token',
+          "Authorization":
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwODIyMTk1LCJleHAiOjE3NDYzNzQxOTV9.u_MXeLFQh-C3PbGa3ky16SlkKJgTTcj5W5HqF_XdmHM",
         },
       );
 
@@ -120,7 +120,6 @@ class _SalesListScreenState extends State<SalesListScreen> {
             return Padding(
               padding: const EdgeInsets.all(5),
               child: Product(
-                token: widget.token,
                 type: 2,
                 product_id: product['itemIdx'],
                 image_link: product['itemImage'], 

@@ -3,6 +3,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../5_main/main_screen.dart';
 import '../10_user_update_screen/user_update_screen.dart';
+import 'package:grand_market/2_mypage/Sales_list_screen.dart';
+import 'package:grand_market/2_mypage/Transaction_list_screen.dart';
+import 'package:grand_market/2_mypage/interest_list_screen.dart';
 
 // Define a mock for ChatPage and ListPage for navigation example
 class ChatPage extends StatelessWidget {
@@ -260,18 +263,24 @@ class MySales extends StatelessWidget {
           child:
               _buildTransactionButton(Icons.favorite_outline, '관심 상품 목록', () {
             // 관심 상품 목록으로 이동
+            Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => InterestListScreen()));
           }),
         ),
         Expanded(
           child: _buildTransactionButton(
               Icons.attach_money_outlined, '판매 상품 목록', () {
             // 판매 상품 목록으로 이동
+            Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => SalesListScreen()));
           }),
         ),
         Expanded(
           child: _buildTransactionButton(
               Icons.shopping_bag_outlined, '구매 상품 목록', () {
             // 구매 상품 목록으로 이동
+            Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => TransactionListScreen()));
           }),
         ),
         const SizedBox(height: 10),

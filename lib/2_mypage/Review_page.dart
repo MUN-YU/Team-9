@@ -3,12 +3,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ReviewPage extends StatefulWidget {
-  final String token;
   final int itemIdx;
 
   const ReviewPage({
     super.key,
-    required this.token,
     required this.itemIdx
   });
 
@@ -36,17 +34,18 @@ class _ReviewPageState extends State<ReviewPage> {
   @override
   void initState(){
     super.initState();
-    fetchProducts(widget.token, widget.itemIdx);
+    fetchProducts(widget.itemIdx);
   }
 
-  Future<void> fetchProducts(String token, int itemIdx) async {
+  Future<void> fetchProducts(int itemIdx) async {
     final url = Uri.parse('https://swe9.comit-server.com/mypage/rating?itemIdx='+itemIdx.toString());
 
     try {
       final response = await http.get(
         url,
         headers: {
-          'Authorization': 'Bearer $token',
+          "Authorization":
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwODIyMTk1LCJleHAiOjE3NDYzNzQxOTV9.u_MXeLFQh-C3PbGa3ky16SlkKJgTTcj5W5HqF_XdmHM",
         },
       );
 
@@ -69,14 +68,15 @@ class _ReviewPageState extends State<ReviewPage> {
     }
   }
 
-  Future<void> postReview(String token, int itemIdx, double rating) async {
+  Future<void> postReview(int itemIdx, double rating) async {
     final url = Uri.parse('https://swe9.comit-server.com/mypage/rating');
 
     try {
       final response = await http.post(
         url,
         headers: {
-          'Authorization': 'Bearer $token',
+          "Authorization":
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwODIyMTk1LCJleHAiOjE3NDYzNzQxOTV9.u_MXeLFQh-C3PbGa3ky16SlkKJgTTcj5W5HqF_XdmHM",
           'Content-Type': 'application/json'
         },
         body: jsonEncode({
@@ -359,7 +359,7 @@ class _ReviewPageState extends State<ReviewPage> {
           child: ElevatedButton(
             onPressed: () {
               if (_selectedReview != null) {
-                postReview(widget.token, widget.itemIdx, _selectedReview!);
+                postReview(widget.itemIdx, _selectedReview!);
               } else {
                 print('Error: 평점이 선택되지 않았습니다.');
                 ScaffoldMessenger.of(context).showSnackBar(

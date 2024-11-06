@@ -6,7 +6,6 @@ import 'dart:convert';
 class Product extends StatefulWidget {
   final Function(int) delete;
 
-  final String token;
   final int type;
   final int product_id;
   final String image_link;
@@ -17,7 +16,6 @@ class Product extends StatefulWidget {
   // 생성자에서 text를 받음
   const Product({
     Key? key,
-    required this.token,
     required this.type,
     required this.product_id,
     required this.image_link,
@@ -33,13 +31,11 @@ class Product extends StatefulWidget {
 
 class HeartButton extends StatefulWidget {
   final bool isliked;
-  final String token;
   final int itemIdx;
 
   const HeartButton({
     Key? key,
     required this.isliked,
-    required this.token,
     required this.itemIdx,
   }) : super(key: key);
 
@@ -56,10 +52,9 @@ class Rem_ModButton extends StatefulWidget {
 }
 
 class ReviewButton extends StatefulWidget {
-  final String token;
   final int itemIdx;
 
-  const ReviewButton({Key? key, required this.token, required this.itemIdx}) : super(key: key);
+  const ReviewButton({Key? key, required this.itemIdx}) : super(key: key);
 
   _ReviewButtonState createState() => _ReviewButtonState();
 }
@@ -95,16 +90,16 @@ class _ProductState extends State<Product> {
 
     switch(_type){
       case 0:
-        dynamicwidget=HeartButton(isliked: false, token: widget.token, itemIdx: _product_id,);
+        dynamicwidget=HeartButton(isliked: false, itemIdx: _product_id,);
         break;
       case 1:
-        dynamicwidget=HeartButton(isliked: true, token: widget.token, itemIdx: _product_id);
+        dynamicwidget=HeartButton(isliked: true, itemIdx: _product_id);
         break;
       case 2:
         dynamicwidget=Rem_ModButton(onpressed: _delete);
         break;
       case 3:
-        dynamicwidget=ReviewButton(token: widget.token, itemIdx: widget.product_id,);
+        dynamicwidget=ReviewButton(itemIdx: widget.product_id,);
         break;
       default:
         dynamicwidget=Text('error');
@@ -205,14 +200,15 @@ class _HeartButtonState extends State<HeartButton> {
     _isLiked=widget.isliked;
   }
 
-  Future<void> togglelikes(String token, int itemIdx) async {
+  Future<void> togglelikes(int itemIdx) async {
     final url = Uri.parse('https://swe9.comit-server.com/items/likes');
 
     try {
       final response = await http.post(
         url,
         headers: {
-          'Authorization': 'Bearer $token',
+          "Authorization":
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwODIyMTk1LCJleHAiOjE3NDYzNzQxOTV9.u_MXeLFQh-C3PbGa3ky16SlkKJgTTcj5W5HqF_XdmHM",
           'Content-Type': 'application/json'
         },
         body: jsonEncode({
@@ -250,7 +246,7 @@ class _HeartButtonState extends State<HeartButton> {
             size: 50, // 아이콘 크기
           ),
           onPressed: () {
-            togglelikes(widget.token, widget.itemIdx);
+            togglelikes(widget.itemIdx);
           },
         ),
       );
@@ -314,7 +310,7 @@ class _ReviewButtonState extends State<ReviewButton>{
     padding: EdgeInsets.all(5),
     child: TextButton(
       onPressed: (){Navigator.push(
-        context, MaterialPageRoute(builder: (context) => ReviewPage(token: widget.token, itemIdx: widget.itemIdx,)));
+        context, MaterialPageRoute(builder: (context) => ReviewPage(itemIdx: widget.itemIdx,)));
         },
       style: TextButton.styleFrom(
         shape: const RoundedRectangleBorder(
