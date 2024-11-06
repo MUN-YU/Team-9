@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:io';
 import 'package:image_picker/image_picker.dart'; // 사진 불러오기를 위한 패키지
@@ -39,7 +40,6 @@ class _ModifyProductScreenState extends State<ModifyProductScreen> {
     _fetchItemDetails();
   }
 
-
   @override
   void dispose() {
     _titleController.dispose();
@@ -52,11 +52,18 @@ class _ModifyProductScreenState extends State<ModifyProductScreen> {
     final url = Uri.parse(
         'https://swe9.comit-server.com/items/detail/${widget.itemIdx}');
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString("auth_token");
+
+      if (token == null) {
+        print("토큰이 없습니다.");
+        return;
+      }
+
       final response = await http.get(
         url,
         headers: {
-          "Authorization":
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwODIyMTk1LCJleHAiOjE3NDYzNzQxOTV9.u_MXeLFQh-C3PbGa3ky16SlkKJgTTcj5W5HqF_XdmHM",
+          "Authorization": "Bearer $token",
         },
       );
 
@@ -70,7 +77,7 @@ class _ModifyProductScreenState extends State<ModifyProductScreen> {
           _titleController.text = itemDetails?['title'] ?? '';
           _priceController.text = itemDetails?['price'].toString() ?? '';
           _descriptionController.text = itemDetails?['description'] ?? '';
-          _isNegotiable=itemDetails?['isOfferAccepted'];
+          _isNegotiable = itemDetails?['isOfferAccepted'];
         });
       } else {
         print('Failed to load item details: ${response.statusCode}');
@@ -109,7 +116,8 @@ class _ModifyProductScreenState extends State<ModifyProductScreen> {
     final isOfferAccepted = _isNegotiable;
     final category = _getCategoryValue(_selectedCategory);
 
-    final url = Uri.parse('https://swe9.comit-server.com/mypage/selling/'+widget.itemIdx.toString());
+    final url = Uri.parse('https://swe9.comit-server.com/mypage/selling/' +
+        widget.itemIdx.toString());
 
     try {
       // MultipartRequest 생성
@@ -117,7 +125,7 @@ class _ModifyProductScreenState extends State<ModifyProductScreen> {
 
       // Authorization 헤더 추가
       request.headers['Authorization'] =
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwODIyMTk1LCJleHAiOjE3NDYzNzQxOTV9.u_MXeLFQh-C3PbGa3ky16SlkKJgTTcj5W5HqF_XdmHM";
+          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwODIyMTk1LCJleHAiOjE3NDYzNzQxOTV9.u_MXeLFQh-C3PbGa3ky16SlkKJgTTcj5W5HqF_XdmHM";
       request.headers['Content-Type'] =
           'multipart/form-data; boundary=<calculated when request is sent>';
 
@@ -161,7 +169,6 @@ class _ModifyProductScreenState extends State<ModifyProductScreen> {
           context,
           MaterialPageRoute(builder: (context) => SalesListScreen()),
         );
-
       } else {
         final responseBody = await response.stream.bytesToString();
         print('물품 등록 실패: ${response.statusCode}');
@@ -196,8 +203,7 @@ class _ModifyProductScreenState extends State<ModifyProductScreen> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.pop(context
-            );
+            Navigator.pop(context);
           }, // 뒤로가기 버튼
         ),
       ),

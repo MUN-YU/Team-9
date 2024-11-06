@@ -4,6 +4,7 @@ import 'package:grand_market/2_mypage/Transaction_list_screen.dart';
 import 'package:grand_market/2_mypage/interest_list_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Mypage_test extends StatefulWidget {
   const Mypage_test({super.key});
@@ -19,12 +20,19 @@ class _Mypage_testState extends State<Mypage_test> {
     final url = Uri.parse('https://swe9.comit-server.com/api/register');
 
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString("auth_token");
+
+      if (token == null) {
+        print("토큰이 없습니다.");
+        return;
+      }
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json',
-        "Authorization":
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwODIyMTk1LCJleHAiOjE3NDYzNzQxOTV9.u_MXeLFQh-C3PbGa3ky16SlkKJgTTcj5W5HqF_XdmHM",
-      },
+        headers: {
+          'Content-Type': 'application/json',
+          "Authorization": "Bearer $token",
+        },
         body: jsonEncode({
           "name": "testname",
           "id": "testid",
@@ -35,16 +43,17 @@ class _Mypage_testState extends State<Mypage_test> {
         }),
       );
 
-    if (response.statusCode == 200) {
+      if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         print('Data received: $data');
-    } else {
+      } else {
         print('Failed to load data: ${response.statusCode} ${response.body}');
-    }
+      }
     } catch (e) {
       print('Error occurred: $e');
     }
   }
+
   //임시로 토큰 받는 함수
   Future<void> getToken() async {
     final url = Uri.parse('https://swe9.comit-server.com/api/auth/login');
@@ -52,24 +61,26 @@ class _Mypage_testState extends State<Mypage_test> {
     try {
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json',
-        "Authorization":
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwODIyMTk1LCJleHAiOjE3NDYzNzQxOTV9.u_MXeLFQh-C3PbGa3ky16SlkKJgTTcj5W5HqF_XdmHM",},
+        headers: {
+          'Content-Type': 'application/json',
+          "Authorization":
+              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwODIyMTk1LCJleHAiOjE3NDYzNzQxOTV9.u_MXeLFQh-C3PbGa3ky16SlkKJgTTcj5W5HqF_XdmHM",
+        },
         body: jsonEncode({
           "id": "testid",
           "password": "12345678",
         }),
       );
 
-    if (response.statusCode == 200) {
+      if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         print('Data received: $data');
 
         _token = data['content']['token'];
         print('Token: $_token');
-    } else {
+      } else {
         print('Failed to load data: ${response.statusCode} ${response.body}');
-    }
+      }
     } catch (e) {
       print('Error occurred: $e');
     }
@@ -92,7 +103,7 @@ class _Mypage_testState extends State<Mypage_test> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Spacer(flex:1),
+            const Spacer(flex: 1),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -103,17 +114,19 @@ class _Mypage_testState extends State<Mypage_test> {
                       ),
                     ),
                     backgroundColor: const Color.fromARGB(255, 222, 211, 27)),
-                onPressed: (){Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => InterestListScreen()));
-                  },
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => InterestListScreen()));
+                },
                 child: const Text(
                   "관심목록",
-                  style: TextStyle(
-                      color: Color.fromARGB(255, 20, 37, 26)),
+                  style: TextStyle(color: Color.fromARGB(255, 20, 37, 26)),
                 ),
               ),
             ),
-            const Spacer(flex:1),
+            const Spacer(flex: 1),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -124,17 +137,19 @@ class _Mypage_testState extends State<Mypage_test> {
                       ),
                     ),
                     backgroundColor: const Color.fromARGB(255, 222, 211, 27)),
-                onPressed: (){Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => SalesListScreen()));
-                  },
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SalesListScreen()));
+                },
                 child: const Text(
                   "판매목록",
-                  style: TextStyle(
-                      color: Color.fromARGB(255, 20, 37, 26)),
+                  style: TextStyle(color: Color.fromARGB(255, 20, 37, 26)),
                 ),
               ),
             ),
-            const Spacer(flex:1),
+            const Spacer(flex: 1),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -145,17 +160,19 @@ class _Mypage_testState extends State<Mypage_test> {
                       ),
                     ),
                     backgroundColor: const Color.fromARGB(255, 222, 211, 27)),
-                onPressed: (){Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => TransactionListScreen()));
-                  },
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => TransactionListScreen()));
+                },
                 child: const Text(
                   "거래목록",
-                  style: TextStyle(
-                      color: Color.fromARGB(255, 20, 37, 26)),
+                  style: TextStyle(color: Color.fromARGB(255, 20, 37, 26)),
                 ),
               ),
             ),
-            const Spacer(flex:1),
+            const Spacer(flex: 1),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -166,14 +183,13 @@ class _Mypage_testState extends State<Mypage_test> {
                       ),
                     ),
                     backgroundColor: const Color.fromARGB(255, 222, 211, 27)),
-                onPressed: (){
+                onPressed: () {
                   Regist();
                   getToken();
-                  },
+                },
                 child: const Text(
                   "임시 토큰",
-                  style: TextStyle(
-                      color: Color.fromARGB(255, 20, 37, 26)),
+                  style: TextStyle(color: Color.fromARGB(255, 20, 37, 26)),
                 ),
               ),
             ),

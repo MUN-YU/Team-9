@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import '../_mypage/my_page_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserUpdateScreen extends StatefulWidget {
   @override
@@ -76,12 +77,16 @@ class _UserUpdateScreenState extends State<UserUpdateScreen> {
   Future<void> _fetchProfileData() async {
     final url = Uri.parse('https://swe9.comit-server.com/api/mypage');
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString("auth_token");
+
+      if (token == null) {
+        print("토큰이 없습니다.");
+        return;
+      }
       final response = await http.get(
         url,
-        headers: {
-          "Authorization":
-              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0IiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwNzMyMjQxLCJleHAiOjE3NDYyODQyNDF9.6dyB5pxultEVmhBYSU9a8WWNrDwteCXwoTjiiM3M9SU"
-        },
+        headers: {"Authorization": "Bearer $token"},
       );
 
       if (response.statusCode == 200) {

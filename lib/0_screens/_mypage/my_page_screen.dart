@@ -6,6 +6,7 @@ import '../10_user_update_screen/user_update_screen.dart';
 import 'package:grand_market/2_mypage/Sales_list_screen.dart';
 import 'package:grand_market/2_mypage/Transaction_list_screen.dart';
 import 'package:grand_market/2_mypage/interest_list_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyPageScreen extends StatefulWidget {
   const MyPageScreen({super.key});
@@ -28,12 +29,27 @@ class _MyPageScreenState extends State<MyPageScreen> {
   }
 
   Future<void> fetchProfileData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    // SharedPreferences에서 토큰 가져오기
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString("auth_token");
+
+    if (token == null) {
+      print("No token found");
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
     final url = Uri.parse('https://swe9.comit-server.com/api/mypage');
     final response = await http.get(
       url,
       headers: {
-        "Authorization":
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0IiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwNzMyMjQxLCJleHAiOjE3NDYyODQyNDF9.6dyB5pxultEVmhBYSU9a8WWNrDwteCXwoTjiiM3M9SU",
+        "Authorization": "Bearer $token",
       },
     );
 
@@ -217,16 +233,16 @@ class MySales extends StatelessWidget {
           child:
               _buildTransactionButton(Icons.favorite_outline, '관심 상품 목록', () {
             // 관심 상품 목록으로 이동
-            Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => InterestListScreen()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => InterestListScreen()));
           }),
         ),
         Expanded(
           child: _buildTransactionButton(
               Icons.attach_money_outlined, '판매 상품 목록', () {
             // 판매 상품 목록으로 이동
-            Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => SalesListScreen()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => SalesListScreen()));
           }),
         ),
         Expanded(
@@ -234,7 +250,9 @@ class MySales extends StatelessWidget {
               Icons.shopping_bag_outlined, '구매 상품 목록', () {
             // 구매 상품 목록으로 이동
             Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => TransactionListScreen()));
+                context,
+                MaterialPageRoute(
+                    builder: (context) => TransactionListScreen()));
           }),
         ),
         const SizedBox(height: 10),

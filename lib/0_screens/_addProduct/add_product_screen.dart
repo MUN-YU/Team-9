@@ -7,6 +7,7 @@ import 'package:intl/intl.dart'; // 가격 포맷팅을 위한 패키지
 import '../5_main/main_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({super.key});
@@ -24,8 +25,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final _descriptionController = TextEditingController(); // 제품 상세 설명
   String? _selectedCategory = '도서'; // 제품 카테고리 선택
   final ImagePicker _picker = ImagePicker();
-
-  //final String _jwtToken =
 
   @override
   void dispose() {
@@ -67,12 +66,20 @@ class _AddProductScreenState extends State<AddProductScreen> {
     final url = Uri.parse('https://swe9.comit-server.com/items');
 
     try {
+      // 토큰 가져오기
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString("auth_token");
+
+      if (token == null) {
+        print("토큰이 없습니다.");
+        return;
+      }
+
       // MultipartRequest 생성
       var request = http.MultipartRequest('POST', url);
 
       // Authorization 헤더 추가
-      request.headers['Authorization'] =
-          'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2IiwidXNlcm5hbWUiOiJoYW5uYWhzIiwiaWF0IjoxNzMwNzg1ODY3LCJleHAiOjE3NDYzMzc4Njd9.gg7du8q1QBPDl5dT8gYxJsScNpBOkrn3tbVkCQjG544';
+      request.headers['Authorization'] = 'Bearer $token';
       request.headers['Content-Type'] =
           'multipart/form-data; boundary=<calculated when request is sent>';
 
