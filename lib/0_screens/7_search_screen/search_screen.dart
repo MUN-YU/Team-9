@@ -43,6 +43,7 @@ class _SearchScreenState extends State<SearchScreen> {
           recentSearches.insert(0, query); // Add to recent searches
           _saveRecentSearches(); // Save to local storage
         }
+
         // Filter items based on the title containing the query
         _searchResults = widget.items
             .where((item) => item['title']
@@ -50,7 +51,12 @@ class _SearchScreenState extends State<SearchScreen> {
                 .toLowerCase()
                 .contains(query.toLowerCase()))
             .toList();
+
+        // Print the search results to the console for debugging
+        print("Search Results for '$query':");
+        _searchResults.forEach((result) => print(result));
       });
+
       // Return both the search results and the search query
       Navigator.pop(context, {'filteredItems': _searchResults, 'query': query});
     }

@@ -240,10 +240,13 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final itemsToShow =
-        (_selectedDepartment != null || _selectedCategory != null)
-            ? _filteredItems
-            : _items;
+    final itemsToShow = (_selectedDepartment != null ||
+            _selectedCategory != null ||
+            _searchQuery != null)
+        ? _filteredItems
+        : _items;
+
+    print("Items to Show: $itemsToShow"); // 디버깅용 출력
 
     return Scaffold(
       appBar: AppBar(
@@ -252,8 +255,7 @@ class _MainScreenState extends State<MainScreen> {
         title: Row(
           children: [
             Padding(
-              padding: const EdgeInsets.only(
-                  right: 16.0), // Adds spacing between button and title
+              padding: const EdgeInsets.only(right: 16.0),
               child: TextButton.icon(
                 icon: Icon(Icons.add, color: Colors.white, size: 24),
                 label: Text(
@@ -269,7 +271,7 @@ class _MainScreenState extends State<MainScreen> {
                 style: TextButton.styleFrom(
                   padding:
                       EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                  minimumSize: Size(80, 40), // Minimum width and height
+                  minimumSize: Size(80, 40),
                 ),
               ),
             ),
