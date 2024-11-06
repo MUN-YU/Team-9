@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grand_market/2_mypage/Review_page.dart';
+import 'package:grand_market/2_mypage/modify_product_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../0_screens/6_detail_screen/detail_screen.dart';
@@ -46,8 +47,9 @@ class HeartButton extends StatefulWidget {
 
 class Rem_ModButton extends StatefulWidget {
   final Function() onpressed;
+  final int itemIdx;
 
-  const Rem_ModButton({required this.onpressed, Key? key}) : super(key: key);
+  const Rem_ModButton({required this.onpressed, required this.itemIdx,Key? key}) : super(key: key);
 
   _Rem_ModButtonState createState() => _Rem_ModButtonState();
 }
@@ -97,7 +99,7 @@ class _ProductState extends State<Product> {
         dynamicwidget=HeartButton(isliked: true, itemIdx: _product_id);
         break;
       case 2:
-        dynamicwidget=Rem_ModButton(onpressed: _delete);
+        dynamicwidget=Rem_ModButton(onpressed: _delete, itemIdx: _product_id,);
         break;
       case 3:
         dynamicwidget=ReviewButton(itemIdx: widget.product_id,);
@@ -286,7 +288,8 @@ class _Rem_ModButtonState extends State<Rem_ModButton>{
       Container(
         padding: const EdgeInsets.all(5),
         child: TextButton(
-          onPressed: (){print("modity");},  //수정 화면으로 넘어가야함 //물품 등록 페이지에서 하단 버튼만 수정하기로 변경
+          onPressed: (){Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => ModifyProductScreen(itemIdx: widget.itemIdx)));},
           style: TextButton.styleFrom(
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.zero), // 모서리를 각지게 설정
