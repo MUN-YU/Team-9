@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../_addProduct/add_product_screen.dart';
 import '../7_search_screen/search_screen.dart';
 import '../6_detail_screen/detail_screen.dart';
@@ -100,11 +101,18 @@ class _MainScreenState extends State<MainScreen> {
   Future<void> _fetchLikedItems() async {
     final url = Uri.parse('https://swe9.comit-server.com/mypage/likes');
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString("auth_token");
+
+      if (token == null) {
+        print("토큰이 없습니다.");
+        return;
+      }
+
       final response = await http.get(
         url,
         headers: {
-          'Authorization':
-              'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwidXNlcm5hbWUiOiJtb29uIiwiaWF0IjoxNzMwODIwOTA0LCJleHAiOjE3NDYzNzI5MDR9.1TfEKkFxBgJ2HiHy05klS2C4YU3FCNsNK1-JrqSJEEI',
+          'Authorization': 'Bearer $token',
         },
       );
 

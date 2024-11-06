@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../_signup/sign_up_screen.dart';
 import '../5_main/main_screen.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -19,18 +22,37 @@ class _LoginPageState extends State<LoginPage> {
       _isLoading = true;
     });
 
-    // Simulated login logic
-    await Future.delayed(const Duration(seconds: 2)); // Fake login delay
-
-    setState(() {
-      _isLoading = false;
-    });
-
-    // Navigate to MainScreen after successful login
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => MainScreen()),
+    final url = Uri.parse('https://swe9.comit-server.com/api/auth/login');
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: json.encode({
+        "id": _idController.text,
+        "password": _passwordController.text,
+      }),
     );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      final token = responseData["content"]["token"];
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString("auth_token", token);
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      // Navigate to MainScreen after successful login
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MainScreen()),
+      );
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      print("로그인 실패: ${response.body}");
+    }
   }
 
   void _navigateToSignUp() {
