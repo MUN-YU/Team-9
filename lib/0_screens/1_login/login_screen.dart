@@ -64,6 +64,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final bool isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: const Color.fromARGB(255, 20, 37, 26),
@@ -75,12 +78,17 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Spacer(flex: 2),
-            Image.asset("assets/images/logo/logo_white_moon.png"),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 100), // 부드러운 애니메이션 효과
+              height: isKeyboardVisible ? 150 : 300, // 키보드 상태에 따른 이미지 높이
+              width: isKeyboardVisible ? 150 : 300, // 키보드 상태에 따른 이미지 너비
+              child: Image.asset("assets/images/logo/logo_white_moon.png"),
+            ),
             const Spacer(flex: 1),
             TextField(
               controller: _idController,
