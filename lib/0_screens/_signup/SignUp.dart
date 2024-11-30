@@ -85,7 +85,7 @@ class _SignUpState extends State<SignUp> {
 
     if (response.statusCode == 200) {
       print('Email sent successfully');
-      Fluttertoast.showToast(msg: "이메일을 확인해주시기 바랍니다!");
+      // Fluttertoast.showToast(msg: "이메일을 확인해주시기 바랍니다!");
     } else {
       print('Failed to send email: ${response.statusCode}');
       print('Response body: ${response.body}');
@@ -109,7 +109,7 @@ class _SignUpState extends State<SignUp> {
         text: 'Your verification code is: $verificationCode',
       );
 
-      Fluttertoast.showToast(msg: "Verification code sent to $userEmail");
+      Fluttertoast.showToast(msg: "$userEmail 이메일을 확인해주시기 바랍니다!");
       _isEmailSent = true;
     } else
       Fluttertoast.showToast(

@@ -210,7 +210,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
             emailAuthController: _emailAuthController,
             emailAuthError: _emailAuthError,
             registerable: () {
-              _isRegisterable = true;
+              setState(() {
+                _isRegisterable = true;
+              });
             },
           ),
         ),
@@ -225,8 +227,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
               height: 70,
               child: ElevatedButton(
                 onPressed: _isRegisterable
-                    ? _submitData
+                    ? () {
+                        print(_isRegisterable);
+                        print("yeah");
+                        _submitData();
+                      }
                     : () {
+                        print(_isRegisterable);
                         Fluttertoast.showToast(msg: "가입 요건이 충족되지 않았습니다.");
                       },
 
