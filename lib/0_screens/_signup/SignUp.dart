@@ -48,9 +48,9 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
 /*---------------------------------------------------------------------------------------*/
-  // final String apiKey = "";
+  final String apiKey = "1dbc808abd8afcfbba086774434c7b4e-c02fd0ba-6859dc7b";
 
-  // final String domain = "";
+  final String domain = "sandbox4364fda2cd5749419fe0a57850b6590f.mailgun.org";
 /*---------------------------------------------------------------------------------------*/
   bool _isEmailSent = false;
   EmailVerificationService? verify;

@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -7,7 +10,8 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
-  final List<Map<String, String>> _messages = [
+  final ImagePicker _picker = ImagePicker();
+  final List<Map<String, dynamic>> _messages = [
     {"text": "구매하고 싶은데 ㅠㅠ 팔렸나요??", "isSentByUser": "true"},
     {"text": "아니요! 아직 안 팔렸어요!!", "isSentByUser": "false"},
     {"text": "아 다행이다! 필기 하셨으려나요?", "isSentByUser": "true"},
@@ -19,13 +23,18 @@ class _ChatScreenState extends State<ChatScreen> {
     if (_messageController.text.trim().isNotEmpty) {
       setState(() {
         _messages.add(
-            {"text": _messageController.text.trim(), "isSentByUser": "true"});
+          {
+            "text": _messageController.text.trim(),
+            "isSentByUser": "true",
+            "image": null,
+          },
+        );
         _messageController.clear();
       });
     }
   }
 
-  Widget _buildMessageBubble(String text, bool isSentByUser) {
+  Widget _buildMessageBubble(String? text, File? image, bool isSentByUser) {
     return Align(
       alignment: isSentByUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
@@ -40,15 +49,47 @@ class _ChatScreenState extends State<ChatScreen> {
             bottomRight: isSentByUser ? Radius.zero : Radius.circular(12),
           ),
         ),
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 16,
-            color: isSentByUser ? Colors.white : Colors.black,
-          ),
-        ),
+        child: image != null // Check if the message has an image
+            ? Image.file(
+                image,
+                width: 200, // Adjust width as needed
+                height: 200, // Adjust height as needed
+                fit: BoxFit.cover,
+              )
+            : text != null // Otherwise, render text
+                ? Text(
+                    text,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: isSentByUser ? Colors.white : Colors.black,
+                    ),
+                  )
+                : SizedBox.shrink(),
       ),
     );
+  }
+
+  Future<void> _pickImageFromCamera() async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(
+        source: ImageSource.camera,
+        maxWidth: 800, // 이미지 크기 제한 (선택 사항)
+        maxHeight: 800,
+        imageQuality: 80, // 이미지 품질 (1-100)
+      );
+
+      if (pickedFile != null) {
+        setState(() {
+          _messages.add({
+            "text": null, // 이미지만 보낼 경우 텍스트 없음
+            "isSentByUser": "true",
+            "image": File(pickedFile.path), // 찍은 이미지 파일 경로 저장
+          });
+        });
+      }
+    } catch (e) {
+      print("Error picking image from camera: $e");
+    }
   }
 
   @override
@@ -104,7 +145,8 @@ class _ChatScreenState extends State<ChatScreen> {
               itemBuilder: (context, index) {
                 final message = _messages[index];
                 return _buildMessageBubble(
-                  message["text"]!,
+                  message["text"],
+                  message["image"],
                   message["isSentByUser"] == "true",
                 );
               },
@@ -122,9 +164,7 @@ class _ChatScreenState extends State<ChatScreen> {
               children: [
                 IconButton(
                   icon: Icon(Icons.add_circle_outline, color: Colors.green),
-                  onPressed: () {
-                    // 파일 추가 등의 작업
-                  },
+                  onPressed: _pickImageFromCamera,
                 ),
                 Expanded(
                   child: TextField(
