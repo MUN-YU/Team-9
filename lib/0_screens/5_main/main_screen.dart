@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grand_market/8_setting/SettingScreen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -287,7 +288,8 @@ class _MainScreenState extends State<MainScreen> {
             Expanded(
               child: Text(
                 '성대한 마켓',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, color: Colors.white70),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -300,7 +302,10 @@ class _MainScreenState extends State<MainScreen> {
           ),
           IconButton(
             icon: Icon(Icons.settings),
-            onPressed: () {},
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SettingScreen()),
+            ),
           ),
         ],
       ),

@@ -8,11 +8,11 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final List<Map<String, String>> _messages = [
-    {"text": "구매하고 싶은데 ㅠㅠ 팔렸나요??", "isSentByUser": "false"},
-    {"text": "아니요! 아직 안 팔렸어요!!", "isSentByUser": "true"},
-    {"text": "아 다행이다! 필기 하셨으려나요?", "isSentByUser": "false"},
-    {"text": "필기 전부 백지에 해서 깨끗해요!", "isSentByUser": "true"},
-    {"text": "표지에 기스 조금 있긴해요 ㅠ", "isSentByUser": "true"},
+    {"text": "구매하고 싶은데 ㅠㅠ 팔렸나요??", "isSentByUser": "true"},
+    {"text": "아니요! 아직 안 팔렸어요!!", "isSentByUser": "false"},
+    {"text": "아 다행이다! 필기 하셨으려나요?", "isSentByUser": "true"},
+    {"text": "필기 전부 백지에 해서 깨끗해요!", "isSentByUser": "false"},
+    {"text": "표지에 기스 조금 있긴해요 ㅠ", "isSentByUser": "false"},
   ];
 
   void _sendMessage() {
@@ -58,8 +58,8 @@ class _ChatScreenState extends State<ChatScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("tjdeo1398", style: TextStyle(fontSize: 18)),
-            Text("3.47",
+            Text("moonmove", style: TextStyle(fontSize: 18)),
+            Text("4.32",
                 style: TextStyle(fontSize: 14, color: Colors.grey[300])),
           ],
         ),
@@ -79,17 +79,17 @@ class _ChatScreenState extends State<ChatScreen> {
             color: Colors.green[50],
             child: Row(
               children: [
-                Image.asset(
-                  "assets/book_icon.png", // 아이콘 경로
-                  width: 50,
-                  height: 50,
-                ),
+                // Image.asset(
+                //   "assets/book_icon.png", // 아이콘 경로
+                //   width: 50,
+                //   height: 50,
+                // ),
                 const SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("미분적분학 1", style: TextStyle(fontSize: 18)),
-                    Text("20,000원", style: TextStyle(color: Colors.grey)),
+                    Text("화공 전공 책 팝니다(번역본)", style: TextStyle(fontSize: 18)),
+                    Text("5000원", style: TextStyle(color: Colors.grey)),
                   ],
                 ),
               ],
