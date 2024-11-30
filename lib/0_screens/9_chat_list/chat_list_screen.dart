@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:grand_market/0_screens/9_chat_list/%08chat_room_item.dart';
+import 'package:grand_market/0_screens/9_chat_list/chat_room_item.dart';
 import 'package:grand_market/0_screens/9_chat_list/chat_room_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
