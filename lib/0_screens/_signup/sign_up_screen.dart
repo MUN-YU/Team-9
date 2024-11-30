@@ -1,5 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:grand_market/0_screens/_signup/EmailVerificationService.dart';
+import 'package:grand_market/0_screens/_signup/SignUp.dart';
+import 'package:grand_market/0_screens/_signup/verify.dart';
 import 'package:http/http.dart' as http;
 import '../1_login/login_screen.dart';
 
@@ -19,8 +23,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String? _passwordError;
   String? _selectedMajor;
   final _emailController = TextEditingController();
+  final _emailAuthController = TextEditingController();
+  String? _emailAuthError;
   String? _emailError;
   bool _isValid = false;
+  bool _isRegisterable = false;
+
+  // void sendTestEmail() async {
+  //   await sendEmail(
+  //     toEmail: 'docong0120@g.skku.edu',
+  //     subject: 'Test Email from Flutter',
+  //     text: 'This is a test email sent using Mailgun.',
+  //   );
+  // }
 
   final List<String> _majors = [
     "화학공학/고분자시스템공학부",
@@ -80,7 +95,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void _validateEmail() {
-    final isEmailValid = _emailController.text.endsWith('@g.skku.edu');
+    print("hey");
+    bool isEmailValid = false;
+    if (_emailController.text.endsWith('@g.skku.edu') ||
+        _emailController.text.endsWith('@skku.edu')) isEmailValid = true;
+
     setState(() {
       _emailError = isEmailValid ? null : '이메일을 올바르게 입력해주세요.';
       _isValid = isEmailValid;
@@ -121,15 +140,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
 
       if (response.statusCode == 201) {
+        // handleEmailVerification(email);
         print('회원가입 성공: ${response.body}');
-
+        Fluttertoast.showToast(msg: "환영합니다!");
+        _nameController.clear();
+        _idController.clear();
+        _pwController.clear();
+        _confirmPwController.clear();
+        _emailController.clear();
         // Navigate back to the LoginScreen after successful sign-up
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => LoginPage()),
         );
       } else {
         print('회원가입 실패: ${response.statusCode}, ${response.body}');
+        Fluttertoast.showToast(msg: "회원가입 실패, 입력을 확인해주세요!");
       }
     } catch (error) {
       print('에러 발생: $error');
@@ -150,6 +177,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
+            /*-------------------------------------------*/
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => LoginPage()),
@@ -179,6 +207,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
             emailError: _emailError,
             onEmailChange: _validateEmail,
             isValid: _isValid,
+            emailAuthController: _emailAuthController,
+            emailAuthError: _emailAuthError,
+            registerable: () {
+              _isRegisterable = true;
+            },
           ),
         ),
       ),
@@ -191,7 +224,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
               width: 450,
               height: 70,
               child: ElevatedButton(
-                onPressed: _submitData,
+                onPressed: _isRegisterable
+                    ? _submitData
+                    : () {
+                        Fluttertoast.showToast(msg: "가입 요건이 충족되지 않았습니다.");
+                      },
+
+                // onPressed: handleEmailVerification(),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFC4D5BA),
                   foregroundColor: Colors.black,
@@ -211,173 +250,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class SignUp extends StatelessWidget {
-  final TextEditingController nameController;
-  final TextEditingController idController;
-  final TextEditingController pwController;
-  final TextEditingController confirmPwController;
-  final String? passwordError;
-  final VoidCallback onPasswordChange;
-  final String? selectedMajor;
-  final List<String> majors;
-  final ValueChanged<String?> onMajorChanged;
-  final TextEditingController emailController;
-  final String? emailError;
-  final VoidCallback onEmailChange;
-  final bool isValid;
-
-  const SignUp({
-    required this.nameController,
-    required this.idController,
-    required this.pwController,
-    required this.confirmPwController,
-    required this.passwordError,
-    required this.onPasswordChange,
-    required this.selectedMajor,
-    required this.majors,
-    required this.onMajorChanged,
-    required this.emailController,
-    required this.emailError,
-    required this.onEmailChange,
-    required this.isValid,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    const borderColor = Color.fromARGB(255, 20, 37, 26);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        const Text('이름', style: TextStyle(fontSize: 20)),
-        const SizedBox(height: 6),
-        TextField(
-          controller: nameController,
-          decoration: InputDecoration(
-            hintText: '이름 입력',
-            filled: true,
-            fillColor: Colors.white,
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: borderColor),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: borderColor, width: 2.0),
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
-        const Divider(color: Colors.grey, thickness: 1),
-        const SizedBox(height: 10),
-        const Text('아이디', style: TextStyle(fontSize: 20)),
-        const SizedBox(height: 6),
-        TextField(
-          controller: idController,
-          decoration: InputDecoration(
-            hintText: '아이디 입력',
-            filled: true,
-            fillColor: Colors.white,
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: borderColor),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: borderColor, width: 2.0),
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
-        const Divider(color: Colors.grey, thickness: 1),
-        const SizedBox(height: 10),
-        const Text('비밀번호', style: TextStyle(fontSize: 20)),
-        const SizedBox(height: 6),
-        TextField(
-          controller: pwController,
-          obscureText: true,
-          onChanged: (_) => onPasswordChange(),
-          decoration: InputDecoration(
-            hintText: '비밀번호 입력',
-            filled: true,
-            fillColor: Colors.white,
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: borderColor),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: borderColor, width: 2.0),
-            ),
-          ),
-        ),
-        const SizedBox(height: 15),
-        const Text('비밀번호 확인', style: TextStyle(fontSize: 20)),
-        const SizedBox(height: 6),
-        TextField(
-          controller: confirmPwController,
-          obscureText: true,
-          onChanged: (_) => onPasswordChange(),
-          decoration: InputDecoration(
-            hintText: '비밀번호 재입력',
-            errorText: passwordError,
-            filled: true,
-            fillColor: Colors.white,
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: borderColor),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: borderColor, width: 2.0),
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
-        const Divider(color: Colors.grey, thickness: 1),
-        const SizedBox(height: 10),
-        const Text('학과', style: TextStyle(fontSize: 20)),
-        const SizedBox(height: 8),
-        DropdownButtonFormField<String>(
-          value: selectedMajor,
-          hint: const Text('학과 선택'),
-          items: majors.map((String major) {
-            return DropdownMenuItem<String>(
-              value: major,
-              child: Text(major),
-            );
-          }).toList(),
-          onChanged: onMajorChanged,
-          dropdownColor: Colors.white,
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.white,
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: borderColor),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: borderColor, width: 2.0),
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
-        const Divider(color: Colors.grey, thickness: 1),
-        const SizedBox(height: 10),
-        const Text('학교 이메일 입력', style: TextStyle(fontSize: 20)),
-        const SizedBox(height: 8),
-        TextField(
-          controller: emailController,
-          onChanged: (_) => onEmailChange(),
-          decoration: InputDecoration(
-            hintText: '@g.skku.edu',
-            errorText: emailError,
-            filled: true,
-            fillColor: Colors.white,
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: borderColor),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: borderColor, width: 2.0),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

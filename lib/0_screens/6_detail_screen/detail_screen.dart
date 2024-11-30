@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grand_market/0_screens/9_chat_list/chat_room_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -100,6 +101,52 @@ class _DetailScreenState extends State<DetailScreen> {
         currentPhotoIndex++;
       }
     });
+  }
+
+  Future<void> _createChatRoom() async {
+    final url = Uri.parse('https://swe9.comit-server.com/chatrooms');
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => ChatScreen()),
+    );
+    // try {
+    //   // SharedPreferences에서 토큰 가져오기
+    //   SharedPreferences prefs = await SharedPreferences.getInstance();
+    //   String? token = prefs.getString("auth_token");
+
+    //   if (token == null) {
+    //     print("토큰이 없습니다.");
+    //     return;
+    //   }
+
+    //   // POST 요청 보내기
+    //   final response = await http.post(
+    //     url,
+    //     headers: {
+    //       'Authorization': 'Bearer $token',
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: json.encode({
+    //       'title': title, // 채팅룸 제목
+    //       'description': description, // 채팅룸 설명
+    //     }),
+    //   );
+
+    //   if (response.statusCode == 201) {
+    //     print('채팅룸 생성 성공');
+    //     Navigator.pushReplacement(
+    //       context,
+    //       MaterialPageRoute(builder: (context) => ChatScreen()),
+    //     );
+    //     // 채팅방 리스트를 다시 불러옵니다.
+    //     // await _fetchChatRooms();
+    //   } else {
+    //     print('채팅룸 생성 실패: ${response.statusCode}');
+    //     print('Response body: ${response.body}');
+    //   }
+    // } catch (e) {
+    //   print('Error: $e');
+    // }
   }
 
   @override
@@ -262,10 +309,9 @@ class _DetailScreenState extends State<DetailScreen> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF46823E),
+                  foregroundColor: Colors.white,
                 ),
-                onPressed: () {
-                  // Code to initiate chat
-                },
+                onPressed: () => _createChatRoom(),
                 child: const Text('채팅하기'),
               ),
             ),
